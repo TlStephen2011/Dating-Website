@@ -2,6 +2,10 @@
 Nodejs, MySQL, Express application
 
 ## Running the application
+- Install dependencies
+```
+$> npm install
+```
 - Create a secrets.json file in config for the email server
 ```
 $> touch ./config/secrets.json
