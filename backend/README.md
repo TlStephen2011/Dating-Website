@@ -14,3 +14,7 @@ $> touch ./config/secrets.json
 }
 ```
 - Modify the MySQL connection string to point to your instance in ./database/db.js
+- Run the application
+```
+$> npm run start
+```
