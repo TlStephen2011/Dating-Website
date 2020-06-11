@@ -1,17 +1,17 @@
-var mysql      = require('mysql');
+var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'sql',
-  user     : 'root',
-  password : 'password'
+  host: 'localhost',
+  user: 'matcha',
+  password: 'matcha'
 });
- 
+
 connection.connect();
 
 const createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS matcha"
 
 connection.query(createDatabaseQuery, (err) => {
-    if (err) throw err;
-    console.log('Database successfully created.');
+  if (err) throw err;
+  console.log('Database successfully created.');
 })
 
 const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS \`matcha\`.\`users\` (
@@ -36,8 +36,8 @@ const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS \`matcha\`.\`users\` (
   UNIQUE INDEX \`Email_UNIQUE\` (\`Email\` ASC) VISIBLE);`
 
 connection.query(createUsersTableQuery, (err) => {
-    if (err) throw err;
-    console.log('Users Table successfully created.');
+  if (err) throw err;
+  console.log('Users Table successfully created.');
 })
 
 const createMatchesTableQuery = "CREATE TABLE IF NOT EXISTS `matcha`.`matches` ( \
@@ -60,8 +60,8 @@ const createMatchesTableQuery = "CREATE TABLE IF NOT EXISTS `matcha`.`matches` (
     ON UPDATE NO ACTION);"
 
 connection.query(createMatchesTableQuery, (err) => {
-    if (err) throw err;
-    console.log('Matches Table successfully created.');
+  if (err) throw err;
+  console.log('Matches Table successfully created.');
 })
 
 const createChatTableQuery = "CREATE TABLE IF NOT EXISTS `matcha`.`chat` ( \
@@ -87,8 +87,8 @@ const createChatTableQuery = "CREATE TABLE IF NOT EXISTS `matcha`.`chat` ( \
 "
 
 connection.query(createChatTableQuery, (err) => {
-    if (err) throw err;
-    console.log('Chat Table successfully created.');
+  if (err) throw err;
+  console.log('Chat Table successfully created.');
 })
 
 const createBlacklistTableQuery = "CREATE TABLE `matcha`.`blacklist` ( \
@@ -110,8 +110,8 @@ const createBlacklistTableQuery = "CREATE TABLE `matcha`.`blacklist` ( \
     ON UPDATE NO ACTION);"
 
 connection.query(createBlacklistTableQuery, (err) => {
-    if (err) throw err;
-    console.log('Blacklist Table successfully created.');
+  if (err) throw err;
+  console.log('Blacklist Table successfully created.');
 })
 
 const createImagesTableQuery = "CREATE TABLE `matcha`.`images` ( \
@@ -128,8 +128,8 @@ const createImagesTableQuery = "CREATE TABLE `matcha`.`images` ( \
     ON UPDATE NO ACTION);"
 
 connection.query(createImagesTableQuery, (err) => {
-    if (err) throw err;
-    console.log('Images Table successfully created.');
+  if (err) throw err;
+  console.log('Images Table successfully created.');
 })
 
 connection.end();
