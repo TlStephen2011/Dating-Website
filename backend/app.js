@@ -5,9 +5,8 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
 var indexRouter = require("./routes/index");
-var profileRouter = require("./routes/profile");
-var dashboardRouter = require("./routes/dashboard");
-var populateDbRoute = require('./routes/populateDb.route.js');
+var userRouter = require('./routes/user');
+
 var cors = require('cors')
 var app = express();
 
@@ -30,8 +29,9 @@ app.use(
 );
 
 app.use("/", indexRouter);
-app.use("/profile", profileRouter);
-app.use("/dashboard", dashboardRouter);
-app.use("/ultraSecretRoute", populateDbRoute);
+app.use('/user', userRouter);
+// app.use("/profile", profileRouter);
+// app.use("/dashboard", dashboardRouter);
+// app.use("/ultraSecretRoute", populateDbRoute);
 
 module.exports = app;
