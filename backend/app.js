@@ -12,6 +12,27 @@ const serviceMiddleware = require("./config/service.middleware");
 var app = express();
 const mysql = require('mysql');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: "Matcha",
+      description: "A Dating Application",
+      contact: {
+        name: "Tyrone Stephen"
+      },
+      servers: ['http://localhost:3000']
+    }
+  },
+  apis: ["./routes/*.js"]
+}
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 //setting up cors for frontend access with credentials
 app.use(cors({
   origin: ['http://127.0.0.1:8080', 'http://localhost:8080'],
