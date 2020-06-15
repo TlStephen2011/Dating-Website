@@ -1,18 +1,20 @@
-import jsonwebtoken from 'jsonwebtoken'
-import { UserRepository } from "../repositories/UserRepository";
+const jwt = require('jsonwebtoken');
 
-export class Auth {
+class AuthService {
+
+    constructor({ userRepository }) {
+        this.userRepository = userRepository;
+    }
 
     signIn({ username, password }) {
-
-
-
         return "jwt";
     }
 
-    isSignedIn(jwt) {
+    isSignedIn(authToken) {
 
         return true;
     }
 
 }
+
+module.exports = AuthService;

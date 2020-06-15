@@ -10,7 +10,7 @@ verifyToken = (req, res, next) => {
   }
 
   try {
-    req.body.username = jwt.verify(token, secret).username;
+    req.user = jwt.verify(token, secret).username;
   } catch (error) {
     res.sendStatus(403);
     return;

@@ -1,4 +1,4 @@
-export class ChatRepository {
+class ChatRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
@@ -21,3 +21,4 @@ export class ChatRepository {
     }
 
 }
+module.exports = ChatRepository;

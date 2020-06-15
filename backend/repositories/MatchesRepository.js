@@ -1,4 +1,4 @@
-export class MatchesRepository {
+class MatchesRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
@@ -21,3 +21,5 @@ export class MatchesRepository {
     }
 
 }
+
+module.exports = MatchesRepository;

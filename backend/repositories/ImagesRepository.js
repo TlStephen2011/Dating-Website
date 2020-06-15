@@ -1,4 +1,4 @@
-export class ImagesRepository {
+class ImagesRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
@@ -21,3 +21,5 @@ export class ImagesRepository {
     }
 
 }
+
+module.exports = ImagesRepository;

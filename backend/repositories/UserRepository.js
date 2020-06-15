@@ -1,7 +1,6 @@
-import { Connection } from "mysql";
 const User = require('../entities/User.model');
 
-export class UserRepository {
+class UserRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
@@ -22,21 +21,36 @@ export class UserRepository {
 
     }
 
-    async getOne(username) {
+    async getOne({ username, email }) {
+        let queryConditions;
+        let values = [];
+
+        if (username && email) {
+            queryConditions = "WHERE username = ? AND email = ?";
+            values.push(username, email);
+        } else if (username) {
+            queryConditions = "WHERE username = ?";
+            values.push(username);
+        } else if (email) {
+            queryConditions = "WHERE email = ?";
+            values.push(email);
+        }
+
+
+        let query = "SELECT * FROM USERS " + queryConditions;
+
         return new Promise((resolve, reject) => {
-            this.connection.connect();
-
-            let query = "SELECT * FROM USERS WHERE username = ?";
-
-            this.connection.query(query, [username], (error, results, fields) => {
-                if (results.length === 0) {
+            this.connection.query(query, values, (error, results, fields) => {
+                if (results && results.length === 0) {
                     reject('User not found');
+                } else {
+                    resolve(new User(results[0]));
                 }
-                resolve(new User(results[0]));
+                return;
             })
-
-            this.connection.end();
         });
     }
 
 }
+
+module.exports = UserRepository;

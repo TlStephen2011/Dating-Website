@@ -6,16 +6,16 @@ class User {
         Username,
         Email,
         Password,
-        Activated,
-        Longitude,
-        Latitude,
-        Biography,
-        Interests,
-        Gender,
-        Sexuality,
-        LastOnline,
-        RegistrationDate,
-        ForgotPasswordToken
+        Activated = false,
+        Longitude = 0,
+        Latitude = 0,
+        Biography = "",
+        Interests = "",
+        Gender = "",
+        Sexuality = "",
+        LastOnline = "",
+        RegistrationDate = "",
+        ForgotPasswordToken = ""
     }) {
         this.id = Id;
         this.firstName = FirstName;
@@ -32,7 +32,7 @@ class User {
         this.sexuality = Sexuality;
         this.lastOnline = LastOnline;
         this.registrationDate = RegistrationDate;
-        this.forgotPasswordToke = ForgotPasswordToke;
+        this.forgotPasswordToken = ForgotPasswordToken;
     }
 }
 

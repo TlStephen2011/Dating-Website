@@ -1,4 +1,4 @@
-export class BlacklistRepository {
+class BlacklistRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
@@ -21,3 +21,5 @@ export class BlacklistRepository {
     }
 
 }
+
+module.exports = BlacklistRepository;
