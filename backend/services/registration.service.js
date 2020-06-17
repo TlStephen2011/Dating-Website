@@ -1,5 +1,6 @@
 const ValidationFactory = require('../validation/validationFactory');
 const User = require('../entities/User.model');
+const Hashing = require('../util/hashing.util');
 
 class RegistrationService {
 
@@ -14,7 +15,9 @@ class RegistrationService {
         lastName,
         username,
         email,
-        password
+        password,
+        longitude,
+        latitude
     }) {
         let registrationValidator = ValidationFactory.create("registration");
         let { errors, isValid } = registrationValidator.validate({
@@ -22,19 +25,53 @@ class RegistrationService {
             lastName,
             username,
             email,
-            password
+            password,
+            latitude,
+            longitude
         });
 
-        if (!isValid) {
-            return {
-                success: false,
-                errors
+
+        return new Promise((resolve, reject) => {
+            if (!isValid) {
+                reject({
+                    success: false,
+                    errors
+                });
             }
-        }
 
-        // GetOne from repo to check if username and email are unique
+            this.userRepository.getOne({ username })
+                .then(user => {
+                    reject({
+                        success: false,
+                        errors: {
+                            username: "username is not unique"
+                        }
+                    });
+                })
+                .catch(err => {
+                    this.userRepository.getOne({ email })
+                        .then(user => {
+                            reject({
+                                success: false,
+                                errors: {
+                                    email: "email is not unique"
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            Hashing.createHash(password)
+                                .then(hashedPassword => {
+                                    password = hashedPassword;
+                                    resolve({
+                                        success: true,
+                                        message: "Registration has been successful"
+                                    });
+                                })
+                        })
+                })
+            return;
+        })
 
-        console.log(isValid);
     }
 }
 

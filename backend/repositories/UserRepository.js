@@ -7,6 +7,14 @@ class UserRepository {
     }
 
     save() {
+
+
+
+        return new Promise((resolve, reject) => {
+            reject("not implemented");
+            return;
+        });
+
     }
 
     delete() {
