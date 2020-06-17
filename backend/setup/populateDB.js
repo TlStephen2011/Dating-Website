@@ -1,4 +1,4 @@
-var db = require("./db");
+var db = require("../database/db");
 var mock = require("./MOCK_DATA.json");
 var crypto = require("crypto");
 var request = require("request");
@@ -35,7 +35,7 @@ offlinePopulation = callback => {
             active: true,
             location: {
                 type: "Point",
-                coordinates: [user.longitude, user.latitude],            
+                coordinates: [user.longitude, user.latitude],
             },
             salt: crypto.randomBytes(16).toString("hex"),
         };
