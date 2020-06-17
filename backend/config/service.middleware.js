@@ -1,5 +1,3 @@
-const mysql = require('mysql');
-
 const UserRepository = require('../repositories/UserRepository');
 const BlacklistRepository = require('../repositories/BlacklistRepository');
 const ChatRepository = require('../repositories/ChatRepository');
