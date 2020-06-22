@@ -25,7 +25,6 @@ const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS \`matcha\`.\`users\` (
   \`Latitude\` DECIMAL(8,6) NOT NULL,
   \`Longitude\` DECIMAL(9,6) NOT NULL,
   \`Biography\` MEDIUMTEXT NULL,
-  \`Interests\` MEDIUMTEXT NULL,
   \`Gender\` ENUM('male', 'female') NULL,
   \`Sexuality\` ENUM('heterosexual', 'homosexual', 'bisexual') NULL DEFAULT 'bisexual',
   \`LastOnline\` DATETIME NULL,
@@ -131,5 +130,38 @@ connection.query(createImagesTableQuery, (err) => {
   if (err) throw err;
   console.log('Images Table successfully created.');
 })
+
+const createInterestsTableQuery = "CREATE TABLE `matcha`.`interests` ( \
+  `Id` INT NOT NULL AUTO_INCREMENT, \
+  `Interest` VARCHAR(35) NOT NULL, \
+  PRIMARY KEY (`id`)); \
+"
+
+connection.query(createInterestsTableQuery, (err) => {
+  if (err) throw err;
+  console.log('Interests Table successfully created.');
+})
+
+const createUserInterestTableQuery = "CREATE TABLE `matcha`.`user_interest` ( \
+  `UserId` INT NOT NULL, \
+  `InterestId` INT NOT NULL, \
+  INDEX `fk_user_idx` (`UserId` ASC) VISIBLE, \
+  INDEX `fk_interest_idx` (`InterestId` ASC) VISIBLE, \
+  CONSTRAINT `fk_user` \
+    FOREIGN KEY (`UserId`) \
+    REFERENCES `matcha`.`users` (`Id`) \
+    ON DELETE CASCADE \
+    ON UPDATE CASCADE, \
+  CONSTRAINT `fk_interest` \
+    FOREIGN KEY (`InterestId`) \
+    REFERENCES `matcha`.`interests` (`Id`) \
+    ON DELETE CASCADE \
+    ON UPDATE CASCADE); \
+";
+
+connection.query(createUserInterestTableQuery, (err) => {
+  if (err) throw err;
+  console.log("User Interests Table successfully created.");
+});
 
 connection.end();

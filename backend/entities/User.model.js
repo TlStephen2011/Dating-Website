@@ -10,7 +10,6 @@ class User {
         Longitude = 0,
         Latitude = 0,
         Biography = "",
-        Interests = "",
         Gender = "",
         Sexuality = "",
         LastOnline = "",
@@ -27,7 +26,6 @@ class User {
         this.longitude = Longitude;
         this.latitude = Latitude;
         this.biography = Biography;
-        this.interests = Interests;
         this.gender = Gender;
         this.sexuality = Sexuality;
         this.lastOnline = LastOnline;
