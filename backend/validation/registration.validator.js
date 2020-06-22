@@ -50,14 +50,14 @@ class RegistrationValidator {
             errors.push({ email: "Must be a valid email address" });
         }
 
-        const passwordRe = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
+        const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
 
         if (!password) {
             isValid = false;
             errors.push({ password: "Is a required field" });
         } else if (!passwordRe.test(password)) {
             isValid = false;
-            errors.push({ password: "Must contain at least 6 characters with at least two of (lowercase, numeric, uppercase)" });
+            errors.push({ password: "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase." });
         }
 
         return {

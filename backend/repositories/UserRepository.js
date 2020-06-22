@@ -6,13 +6,20 @@ class UserRepository {
         this.connection = dbCon;
     }
 
-    save() {
+    save(user) {
 
+        return new Promise(async (resolve, reject) => {
+            const query = "INSERT INTO users(FirstName, LastName, Email, Password, Username, Latitude, Longitude) \
+                            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-
-        return new Promise((resolve, reject) => {
-            reject("not implemented");
-            return;
+            this.connection.query(query, [user.firstName, user.lastName, user.email,
+            user.password, user.username, user.latitude, user.longitude], (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
         });
 
     }

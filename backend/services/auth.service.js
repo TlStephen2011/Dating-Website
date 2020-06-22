@@ -29,6 +29,17 @@ class AuthService {
                     Hashing.verify(password, user.password)
                         .then(isMatch => {
                             if (isMatch) {
+
+                                if (user.activated === false) {
+                                    reject({
+                                        success: false,
+                                        errors: {
+                                            inactive: "Please activate your account by verifying your email address"
+                                        }
+                                    });
+                                    return;
+                                }
+
                                 const token = jwt.sign({
                                     id: user.id,
                                     username: user.username

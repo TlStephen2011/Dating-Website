@@ -37,6 +37,7 @@ class RegistrationService {
                     success: false,
                     errors
                 });
+                return;
             }
 
             this.userRepository.getOne({ username })
@@ -59,13 +60,30 @@ class RegistrationService {
                             });
                         })
                         .catch(err => {
+
+                            // send email
+
                             Hashing.createHash(password)
                                 .then(hashedPassword => {
                                     password = hashedPassword;
-                                    resolve({
-                                        success: true,
-                                        message: "Registration has been successful"
-                                    });
+                                    this.userRepository.save({
+                                        firstName,
+                                        lastName,
+                                        username,
+                                        email,
+                                        password,
+                                        longitude,
+                                        latitude
+                                    }).then(result => {
+                                        resolve({
+                                            success: true,
+                                            message: "Registration has been successful",
+                                            user: result
+                                        });
+                                    })
+                                        .catch(err => {
+                                            throw err;
+                                        })
                                 })
                         })
                 })
