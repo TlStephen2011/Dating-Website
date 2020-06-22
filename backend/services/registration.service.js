@@ -1,6 +1,7 @@
 const ValidationFactory = require('../validation/validationFactory');
 const User = require('../entities/User.model');
 const Hashing = require('../util/hashing.util');
+const EmailService = require('../config/email');
 
 class RegistrationService {
 
@@ -75,10 +76,15 @@ class RegistrationService {
                                         longitude,
                                         latitude
                                     }).then(result => {
-                                        resolve({
-                                            success: true,
-                                            message: "Registration has been successful",
-                                            user: result
+                                        const token = "ABCDE";
+                                        EmailService.sendMail(token, email, `http://localhost:8080/verify?username=${username}&t=${token}`, (err, info) => {
+
+                                            if (err) throw err;
+
+                                            resolve({
+                                                success: true,
+                                                message: "Registration has been successful, check your email for an activation link"
+                                            });
                                         });
                                     })
                                         .catch(err => {
