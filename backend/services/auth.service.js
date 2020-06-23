@@ -26,11 +26,11 @@ class AuthService {
 
             this.userRepository.getOne(username)
                 .then(user => {
-                    Hashing.verify(password, user.password)
+                    Hashing.verify({ password, hash: user.password })
                         .then(isMatch => {
                             if (isMatch) {
 
-                                if (user.activated === false) {
+                                if (user.activated == false) {
                                     reject({
                                         success: false,
                                         errors: {
@@ -79,6 +79,39 @@ class AuthService {
                     })
                 })
             return;
+        })
+    }
+
+    activateUser({
+        username,
+        activationToken
+    }) {
+        if (!username || !activationToken) throw new Error('Requires username and activation token');
+        if (activationToken.length != 5) throw new Error('Invalid activation token.');
+
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await this.userRepository.getOne({ username });
+
+                if (user.activationToken === activationToken) {
+                    const activated = await this.userRepository.update(user.id, { activated: 1, activationToken: "" });
+                    resolve({
+                        success: true,
+                        message: "Your account has been activated"
+                    })
+                    return;
+                }
+
+                reject({
+                    success: false,
+                    message: "Invalid attempt at verification"
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    message: "Invalid attempt at verification"
+                });
+            }
         })
     }
 

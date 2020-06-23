@@ -2,6 +2,7 @@ const ValidationFactory = require('../validation/validationFactory');
 const User = require('../entities/User.model');
 const Hashing = require('../util/hashing.util');
 const EmailService = require('../config/email');
+const crypto = require('crypto');
 
 class RegistrationService {
 
@@ -67,6 +68,7 @@ class RegistrationService {
                             Hashing.createHash(password)
                                 .then(hashedPassword => {
                                     password = hashedPassword;
+                                    const activationToken = crypto.randomBytes(5).toString('hex').substr(0, 5);
                                     this.userRepository.save({
                                         firstName,
                                         lastName,
@@ -74,10 +76,10 @@ class RegistrationService {
                                         email,
                                         password,
                                         longitude,
-                                        latitude
+                                        latitude,
+                                        activationToken
                                     }).then(result => {
-                                        const token = "ABCDE";
-                                        EmailService.sendMail(token, email, `http://localhost:8080/verify?username=${username}&t=${token}`, (err, info) => {
+                                        EmailService.sendMail(activationToken, email, `http://localhost:8080/user/activate/${username}`, (err, info) => {
 
                                             if (err) throw err;
 

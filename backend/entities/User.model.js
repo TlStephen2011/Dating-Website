@@ -14,7 +14,8 @@ class User {
         Sexuality = "",
         LastOnline = "",
         RegistrationDate = "",
-        ForgotPasswordToken = ""
+        ForgotPasswordToken = "",
+        ActivationToken = ""
     }) {
         this.id = Id;
         this.firstName = FirstName;
@@ -31,6 +32,7 @@ class User {
         this.lastOnline = LastOnline;
         this.registrationDate = RegistrationDate;
         this.forgotPasswordToken = ForgotPasswordToken;
+        this.activationToken = ActivationToken;
     }
 }
 

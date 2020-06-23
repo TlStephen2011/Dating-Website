@@ -1,4 +1,5 @@
 const User = require('../entities/User.model');
+const _ = require('lodash');
 
 class UserRepository {
 
@@ -9,11 +10,11 @@ class UserRepository {
     save(user) {
 
         return new Promise(async (resolve, reject) => {
-            const query = "INSERT INTO users(FirstName, LastName, Email, Password, Username, Latitude, Longitude) \
-                            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            const query = "INSERT INTO users(FirstName, LastName, Email, Password, Username, Latitude, Longitude, ActivationToken, RegistrationDate) \
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
             this.connection.query(query, [user.firstName, user.lastName, user.email,
-            user.password, user.username, user.latitude, user.longitude], (err, result) => {
+            user.password, user.username, user.latitude, user.longitude, user.activationToken], (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -28,7 +29,42 @@ class UserRepository {
 
     }
 
-    update() {
+    update(id, payload) {
+
+        Object.keys(payload).forEach(key => {
+            payload[_.upperFirst(key)] = payload[key];
+            delete payload[key];
+        });
+
+        const user = new User(payload);
+
+        let updateQuery = "UPDATE users SET "
+        const values = [];
+
+        Object.keys(payload).forEach(key => {
+            if (user[_.lowerFirst(key)] === payload[key]) {
+                updateQuery += `${_.upperFirst(key)} = ?, `;
+                values.push(user[_.lowerFirst(key)]);
+            }
+        })
+        updateQuery = updateQuery.slice(0, updateQuery.length - 2);
+        updateQuery += ` WHERE id = ?`;
+        values.push(id);
+
+        return new Promise((resolve, reject) => {
+            try {
+                this.connection.query(updateQuery, values, (err, results) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+            return;
+        })
 
     }
 
