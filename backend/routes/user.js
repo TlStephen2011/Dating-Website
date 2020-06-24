@@ -56,4 +56,22 @@ router.get('/', AuthService.checkAuth, async (req, res) => {
 
 })
 
+router.get('/password-reset/:user', async (req, res) => {
+    try {
+        const data = await req.services.authService.requestPasswordReset(req.params.user);
+        res.json(data);
+    } catch (error) {
+        res.json(error);
+    }
+})
+
+router.put('/password-reset/:user', async (req, res) => {
+    try {
+        const data = await req.services.authService.updatePassword(req.params.user, req.body.token, req.body.password)
+        res.json(data);
+    } catch (error) {
+        res.json(error);
+    }
+})
+
 module.exports = router;

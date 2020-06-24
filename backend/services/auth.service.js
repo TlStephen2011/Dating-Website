@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const Hashing = require('../util/hashing.util');
 const ValidationFactory = require('../validation/validationFactory');
 const jwtSecret = "mysecret"
+const EmailService = require('../config/email');
+const crypto = require('crypto');
+const HashingUtil = require('../util/hashing.util');
 
 class AuthService {
 
@@ -113,6 +116,105 @@ class AuthService {
                 });
             }
         })
+    }
+
+    requestPasswordReset(username) {
+        const passwordResetToken = crypto.randomBytes(5).toString('hex').substr(0, 5);
+
+        return new Promise(async (resolve, reject) => {
+            if (!username || username.length <= 3) {
+                reject({
+                    success: false,
+                    errors: [{
+                        username: "Expected user as a parameter"
+                    }]
+                })
+                return;
+            }
+
+            try {
+                const user = await this.userRepository.getOne({username});
+                const reset = await this.userRepository.update(user.id, {
+                    forgotPasswordToken: passwordResetToken
+                })
+                
+                EmailService.sendForgotPassword(passwordResetToken, user.email, `http://localhost:8080/reset/${user.username}`, (error, info) => {
+                    if (error) throw error;    
+                    resolve({
+                        success: true,
+                        message: `Check your email at ${user.email} to reset your password`
+                    });
+                })
+                return;
+            } catch (error) {
+                reject({
+                    success: false,
+                    errors: [{
+                        reset: "Unable to process your request at this time"
+                    }]
+                })
+                return;
+            }
+
+        })        
+    }
+
+    updatePassword(username, token, newPassword) {
+        return new Promise(async (resolve, reject) => {
+            const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
+            const errReject = {
+                success: false,
+                errors: {
+                    username: "Not valid or",
+                    token: "is invalid"
+                }
+            }
+            
+            if (!passwordRe.test(newPassword)) {
+                errReject.errors.password = "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase.";
+            }
+
+            if (!username || username.length <= 3 || !token || token.length !== 5 || !passwordRe.test(newPassword)) {
+                reject(errReject);
+                return;
+            }
+            
+            try {
+                const user = await this.userRepository.getOne({username});
+                if (user.forgotPasswordToken !== token) {
+                    reject({
+                        success: false,
+                        errors: [{
+                            token: "Invalid token"
+                        }]
+                    })
+                    return;
+                }
+
+                const passwordHash = await HashingUtil.createHash(newPassword);
+
+                const update = await this.userRepository.update(user.id, {
+                    forgotPasswordToken: "",
+                    password: passwordHash
+                });
+
+                resolve({
+                    success: true,
+                    message: "Your password has been reset"
+                });
+                return;
+
+            } catch (error) {
+                reject({
+                    success: false,
+                    errors: [
+                        {
+                            reset: "Try again later, or request a new token"
+                        }
+                    ]
+                })
+            }
+        });
     }
 
     static checkAuth(req, res, next) {

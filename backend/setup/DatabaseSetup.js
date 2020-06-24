@@ -28,6 +28,7 @@ const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS \`matcha\`.\`users\` (
   \`Gender\` ENUM('male', 'female') NULL,
   \`Sexuality\` ENUM('heterosexual', 'homosexual', 'bisexual') NULL DEFAULT 'bisexual',
   \`LastOnline\` DATETIME NULL,
+  \`ActivationToken\` VARCHAR(50) NULL,
   \`RegistrationDate\` DATETIME NULL,
   \`ForgotPasswordToken\` VARCHAR(5) NULL,
   PRIMARY KEY (\`Id\`),
