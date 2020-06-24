@@ -30,7 +30,7 @@ class AuthService {
             this.userRepository.getOne(username)
                 .then(user => {
                     Hashing.verify({ password, hash: user.password })
-                        .then(isMatch => {
+                        .then(async isMatch => {
                             if (isMatch) {
 
                                 if (user.activated == false) {
@@ -48,6 +48,10 @@ class AuthService {
                                     username: user.username
                                 }, jwtSecret, {
                                     expiresIn: "1 days"
+                                });
+                                
+                                const updateLastOnlineTime = await this.userRepository.update(user.id, {
+                                    lastOnline: new Date().toISOString().slice(0, 19).replace('T', ' ')
                                 });
 
                                 resolve({
@@ -178,7 +182,7 @@ class AuthService {
                 reject(errReject);
                 return;
             }
-            
+
             try {
                 const user = await this.userRepository.getOne({username});
                 if (user.forgotPasswordToken !== token) {
