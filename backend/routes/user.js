@@ -21,6 +21,10 @@ router.post('/', (req, res) => {
         })
 });
 
+router.put('/', AuthService.checkAuth, async (req, res) => {
+    
+})
+
 router.post('/activate/:user', (req, res) => {
     const activationToken = req.body.token;
     const user = req.params.user;
