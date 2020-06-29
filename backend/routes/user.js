@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const AuthService = require('../services/auth.service');
-const RegistrationService = require('../services/registration.service');
+const updateUserSchema = require('../validation/updateUser.schema');
+const { validationResult, checkSchema } = require("express-validator");
+const { TooManyRequests } = require("http-errors");
 
 router.post('/', (req, res) => {
     req.services.registrationService.register({
@@ -21,8 +23,40 @@ router.post('/', (req, res) => {
         })
 });
 
-router.put('/', AuthService.checkAuth, async (req, res) => {
-    
+router.put('/', AuthService.checkAuth, checkSchema(updateUserSchema), async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        res.json({
+            success: false,
+            errors
+        });
+    } else {
+
+        const { email, firstName, lastName, password, longitude, latitude, biography, gender, sexuality } = req.body;
+
+        try {
+            const ret = await req.services.userService.updateUser(req.user.id, {
+                email,
+                firstName,
+                lastName,
+                password,
+                longitude,
+                latitude,
+                biography,
+                gender,
+                sexuality
+            });
+
+            res.json(ret);
+
+        } catch (error) {
+            res.json({
+                success: false,
+                error: error
+            });
+        }
+    }
 })
 
 router.post('/activate/:user', (req, res) => {
@@ -47,7 +81,10 @@ router.post('/activate/:user', (req, res) => {
 router.get('/', AuthService.checkAuth, async (req, res) => {
 
     if (req.user.username === req.query.username) {
-        req.services.userService.getUser(req.query)
+        req.services.userService.getUser({
+            id: req.user.id,
+            username: req.user.username
+        })
             .then(data => {
                 res.status(200).send(data);
             })
@@ -75,6 +112,39 @@ router.put('/password-reset/:user', async (req, res) => {
         res.json(data);
     } catch (error) {
         res.json(error);
+    }
+})
+
+router.post('/interests', AuthService.checkAuth, async (req, res) => {
+    const { interests } = req.body;
+
+    try {
+        const ret = await req.services.userService.updateInterests(req.user.id, interests);
+        res.json({
+            success: true,
+            message: 'Your interests have been updated succesfully'
+        });
+    } catch (error) {
+        res.json({
+            success: false,
+            error
+        });
+    }
+})
+
+router.delete('/interests', AuthService.checkAuth, async (req, res) => {
+    const { interests } = req.body;
+    try {
+        const ret = await req.services.userService.removeInterests(req.user.id, interests);
+        res.json({
+            success: true,
+            message: 'Your interests have been removed'
+        })
+    } catch (error) {
+        res.json({
+            success: false,
+            error
+        });
     }
 })
 

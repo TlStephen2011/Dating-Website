@@ -102,6 +102,20 @@ class UserRepository {
         });
     }
 
+    getUserById(id) {
+        const query = 'SELECT * FROM USERS WHERE Id = ?';
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [id], (error, results) => {
+                if (error) reject('Internal server error');
+                else if (results && results.length === 0) reject('User not found');
+                else resolve(new User(results[0]));
+                return;
+            })
+        })
+
+    }
+
 }
 
 module.exports = UserRepository;

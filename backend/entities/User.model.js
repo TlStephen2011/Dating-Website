@@ -11,6 +11,7 @@ class User {
         Latitude = 0,
         Biography = "",
         Gender = "",
+        Interests = [],
         Sexuality = "",
         LastOnline = "",
         RegistrationDate = "",
@@ -33,6 +34,7 @@ class User {
         this.registrationDate = RegistrationDate;
         this.forgotPasswordToken = ForgotPasswordToken;
         this.activationToken = ActivationToken;
+        this.interests = Interests;
     }
 }
 

@@ -145,24 +145,20 @@ connection.query(createInterestsTableQuery, (err) => {
 
 const createUserInterestTableQuery = "CREATE TABLE `matcha`.`user_interest` ( \
   `UserId` INT NOT NULL, \
-  `InterestId` INT NOT NULL, \
-  INDEX `fk_user_idx` (`UserId` ASC) VISIBLE, \
-  INDEX `fk_interest_idx` (`InterestId` ASC) VISIBLE, \
-  CONSTRAINT `fk_user` \
-    FOREIGN KEY (`UserId`) \
-    REFERENCES `matcha`.`users` (`Id`) \
-    ON DELETE CASCADE \
-    ON UPDATE CASCADE, \
-  CONSTRAINT `fk_interest` \
-    FOREIGN KEY (`InterestId`) \
-    REFERENCES `matcha`.`interests` (`Id`) \
-    ON DELETE CASCADE \
-    ON UPDATE CASCADE); \
+  `InterestId` INT NOT NULL); \
 ";
 
 connection.query(createUserInterestTableQuery, (err) => {
   if (err) throw err;
   console.log("User Interests Table successfully created.");
 });
+
+
+const createInterestsTableUniqueIndex = "CREATE UNIQUE INDEX`idx_interests_Interest`  ON`matcha`.`interests`(Interest) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT";
+
+connection.query(createInterestsTableUniqueIndex, (err) => {
+  if (err) throw err;
+  console.log('Created unique index on interests table');
+})
 
 connection.end();
