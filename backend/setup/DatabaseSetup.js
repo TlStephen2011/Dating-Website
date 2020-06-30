@@ -161,4 +161,11 @@ connection.query(createInterestsTableUniqueIndex, (err) => {
   console.log('Created unique index on interests table');
 })
 
+const autoIncrementImagesTablePrimaryKeyQuery = "ALTER TABLE `matcha`.`images` CHANGE COLUMN`Id` `Id` INT NOT NULL AUTO_INCREMENT;";
+
+connection.query(autoIncrementImagesTablePrimaryKeyQuery, (err) => {
+  if (err) throw err;
+  console.log('Added auto increment to images table primary key');
+})
+
 connection.end();

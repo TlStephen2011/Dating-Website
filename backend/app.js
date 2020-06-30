@@ -6,6 +6,7 @@ var logger = require("morgan");
 
 var indexRouter = require("./routes/index");
 var userRouter = require('./routes/user');
+var imageRouter = require('./routes/image');
 
 var cors = require('cors');
 const serviceMiddleware = require("./config/service.middleware");
@@ -52,7 +53,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -64,6 +65,7 @@ app.use(
 // routes
 app.use("/", indexRouter);
 app.use('/user', userRouter);
+app.use('/image', imageRouter);
 // app.use("/profile", profileRouter);
 // app.use("/dashboard", dashboardRouter);
 // app.use("/ultraSecretRoute", populateDbRoute);

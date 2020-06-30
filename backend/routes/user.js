@@ -3,7 +3,6 @@ var router = express.Router();
 const AuthService = require('../services/auth.service');
 const updateUserSchema = require('../validation/updateUser.schema');
 const { validationResult, checkSchema } = require("express-validator");
-const { TooManyRequests } = require("http-errors");
 
 router.post('/', (req, res) => {
     req.services.registrationService.register({

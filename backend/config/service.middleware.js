@@ -7,6 +7,7 @@ const InterestsRepository = require('../repositories/InterestsRepository');
 const AuthService = require('../services/auth.service');
 const RegistrationService = require('../services/registration.service');
 const UserService = require('../services/user.service');
+const ImageService = require('../services/image.service');
 
 module.exports = function (connection) {
     const userRepository = new UserRepository(connection);
@@ -20,6 +21,7 @@ module.exports = function (connection) {
     const authService = new AuthService({ userRepository });
     const registrationService = new RegistrationService({ userRepository });
     const userService = new UserService({ userRepository, interestsRepository });
+    const imageService = new ImageService({ imagesRepository });
 
     return (req, res, next) => {
         // add each service onto request
@@ -27,6 +29,7 @@ module.exports = function (connection) {
         req.services.authService = authService;
         req.services.registrationService = registrationService;
         req.services.userService = userService;
+        req.services.imageService = imageService;
 
         next();
     }
