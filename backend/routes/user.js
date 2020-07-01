@@ -32,7 +32,7 @@ router.put('/', AuthService.checkAuth, checkSchema(updateUserSchema), async (req
         });
     } else {
 
-        const { email, firstName, lastName, password, longitude, latitude, biography, gender, sexuality } = req.body;
+        const { email, firstName, lastName, password, longitude, latitude, biography, gender, sexuality, dateOfBirth } = req.body;
 
         try {
             const ret = await req.services.userService.updateUser(req.user.id, {
@@ -44,7 +44,8 @@ router.put('/', AuthService.checkAuth, checkSchema(updateUserSchema), async (req
                 latitude,
                 biography,
                 gender,
-                sexuality
+                sexuality,
+                dateOfBirth
             });
 
             res.json(ret);

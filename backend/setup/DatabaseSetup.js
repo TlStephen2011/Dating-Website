@@ -168,4 +168,11 @@ connection.query(autoIncrementImagesTablePrimaryKeyQuery, (err) => {
   console.log('Added auto increment to images table primary key');
 })
 
+const addDateOfBirth = "ALTER TABLE`matcha`.`users` ADD COLUMN`DateOfBirth` DATETIME NULL DEFAULT NULL AFTER`ForgotPasswordToken`;";
+
+connection.query(addDateOfBirth, (err) => {
+  if (err) throw err;
+  console.log('Added date of birth to users table');
+})
+
 connection.end();

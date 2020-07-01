@@ -59,4 +59,13 @@ module.exports = {
             errorMessage: "Must be either 'bisexual' or 'heterosexual' or 'homosexual' (case sensitive)"
         }
     },
+    dateOfBirth: {
+        in: ['body'],
+        custom: {
+            options: (value) => !!value && validator.isISO8601(value.toISOString()),
+            errorMessage: "The 'dateOfBirth' field must follow the standard ISO 8601",
+        },
+        toDate: true,
+        optional: true
+    }
 };

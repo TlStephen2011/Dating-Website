@@ -1,6 +1,5 @@
 const ValidationFactory = require('../validation/validationFactory');
 const User = require('../entities/User.model');
-const UserRepository = require('../repositories/UserRepository');
 const EmailService = require('../config/email');
 const crypto = require('crypto');
 
@@ -108,8 +107,13 @@ class UserService {
 
             try {
 
+                if (updateOptions.dateOfBirth) {
+                    updateOptions.dateOfBirth = updateOptions.toISOString().slice(0, 19).replace('T', ' ');
+                }
+
                 if (updateOptions.email) {
                     try {
+                        0
                         const isEmailUnique = await this.userRepository.getOne({ email: updateOptions.email });
                         reject({
                             success: false,

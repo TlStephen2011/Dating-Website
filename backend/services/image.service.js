@@ -8,15 +8,6 @@ class ImageService {
         this.userRepository = userRepository;
     }
 
-    getImage(id, imageNumber) {
-        return new Promise((resolve, reject) => {
-            resolve({
-                success: true,
-                message: 'NOt iMplementEd'
-            });
-        })
-    }
-
     getUserProfileImage(username) {
         return new Promise(async (resolve, reject) => {
             try {

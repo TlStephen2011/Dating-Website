@@ -16,7 +16,8 @@ class User {
         LastOnline = "",
         RegistrationDate = "",
         ForgotPasswordToken = "",
-        ActivationToken = ""
+        ActivationToken = "",
+        DateOfBirth = ""
     }) {
         this.id = Id;
         this.firstName = FirstName;
@@ -35,6 +36,7 @@ class User {
         this.forgotPasswordToken = ForgotPasswordToken;
         this.activationToken = ActivationToken;
         this.interests = Interests;
+        this.dateOfBirth = DateOfBirth;
     }
 }
 
