@@ -77,33 +77,34 @@ class UserRepository {
         let values = [];
 
         if (username && email) {
-            queryConditions = "WHERE username = ? AND email = ?";
+            queryConditions = "WHERE Username = ? AND Email = ?";
             values.push(username, email);
         } else if (username) {
-            queryConditions = "WHERE username = ?";
+            queryConditions = "WHERE Username = ?";
             values.push(username);
         } else if (email) {
-            queryConditions = "WHERE email = ?";
+            queryConditions = "WHERE Email = ?";
             values.push(email);
         }
 
 
-        let query = "SELECT * FROM USERS " + queryConditions;
+        let query = "SELECT * FROM users " + queryConditions;
 
         return new Promise((resolve, reject) => {
             this.connection.query(query, values, (error, results, fields) => {
-                if (results && results.length === 0) {
+                console.log(error, fields, results);
+                if (results && results == undefined && results.length === 0) {
                     reject('User not found');
                 } else {
                     resolve(new User(results[0]));
                 }
-                return;
+                //return;
             })
         });
     }
 
     getUserById(id) {
-        const query = 'SELECT * FROM USERS WHERE Id = ?';
+        const query = 'SELECT * FROM users WHERE Id = ?';
 
         return new Promise((resolve, reject) => {
             this.connection.query(query, [id], (error, results) => {
