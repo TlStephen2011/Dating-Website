@@ -10,8 +10,8 @@ class UserRepository {
     save(user) {
 
         return new Promise(async (resolve, reject) => {
-            const query = "INSERT INTO users(FirstName, LastName, Email, Password, Username, Latitude, Longitude, ActivationToken, RegistrationDate) \
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+            const query = "INSERT INTO users(FirstName, LastName, Email, Password, Username, Latitude, Longitude, ActivationToken, RegistrationDate, FameRating) \
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 50)";
 
             this.connection.query(query, [user.firstName, user.lastName, user.email,
             user.password, user.username, user.latitude, user.longitude, user.activationToken], (err, result) => {

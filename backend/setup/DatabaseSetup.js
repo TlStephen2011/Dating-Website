@@ -175,4 +175,12 @@ connection.query(addDateOfBirth, (err) => {
   console.log('Added date of birth to users table');
 })
 
+const addFameRatingToUsersTableQuery = "ALTER TABLE `matcha`.`users` \
+ADD COLUMN`FameRating` INT NOT NULL AFTER`DateOfBirth`;";
+
+connection.query(addFameRatingToUsersTableQuery, (err) => {
+  if (err) throw err;
+  console.log('Added fame rating to users table');
+})
+
 connection.end();
