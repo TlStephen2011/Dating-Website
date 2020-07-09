@@ -50,7 +50,7 @@ class RegistrationValidator {
             errors.push({ email: "Must be a valid email address" });
         }
 
-        const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
+        const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
 
         if (!password) {
             isValid = false;

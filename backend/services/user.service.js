@@ -164,7 +164,7 @@ class UserService {
                         const user = await this.userRepository.getUserById(id);
                         const activationToken = crypto.randomBytes(5).toString('hex').substr(0, 5);
                         updateOptions.activationToken = activationToken;
-                        EmailService.sendMail(activationToken, updateOptions.email, `http://localhost:8080/user/activate/${user.username}`, async (err, info) => {
+                        EmailService.sendMail(activationToken, updateOptions.email, `http://localhost:8080/token/${user.username}`, async (err, info) => {
                             if (err) throw err;
                             const res = await this.userRepository.update(id, updateOptions);
                             resolve({

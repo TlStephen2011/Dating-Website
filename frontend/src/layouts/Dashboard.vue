@@ -14,6 +14,11 @@
           <p>My Profile</p>
         </v-btn>
       </router-link>
+      <router-link to="/messages">
+        <v-btn text @click="$emit('navLinkClicked', 'Messages')">
+	        <p>Messages</p>
+        </v-btn>
+      </router-link>
       <v-btn text @click="$emit('navLinkClicked', 'Logout')">
         <p>Logout</p>
       </v-btn>

@@ -51,7 +51,6 @@ export default {
           await this.$store.dispatch("getUsers");
           this.$router.push("/dashboard");
           loader.hide();
-          // TODO: handle redirect
         })
         .catch(err => {
           console.log(err);

@@ -56,7 +56,7 @@ export default {
   methods: {
     register() {
       this.loading = true;
-      api.post('http://localhost:3000/user', this.user)
+      api.post('/user', this.user)
         .then(({ data }) => {
           console.log(data);
           this.loading = false;
