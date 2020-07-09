@@ -1,6 +1,6 @@
 <template>
-  <v-card max-width="300">
-    <v-img height="100px" :src="image">
+  <v-card max-width="250">
+    <v-img height="150px" :src="image">
       <v-card-title>@{{ user.username }}</v-card-title>
     </v-img>
     <v-card-text>
@@ -13,18 +13,37 @@
 </template>
 
 <script>
+import { getProfilePic } from "@/api/api";
+
 export default {
   name: "User",
   props: ["user"],
   data() {
     return {
-      image: "",
+      image: "/defaultprofile.png",
       age: 0
     };
   },
   mounted() {
-    // this.age =
-    //   new Date().getFullYear - new Date(this.user.dateOfBirth).getFullYear();
+    // handle age
+    if (!this.user.dateOfBirth) {
+      this.age = "Unknown";
+    } else {
+      this.age =
+        new Date().getFullYear() -
+        new Date(Date.parse(this.user.dateOfBirth)).getFullYear();
+    }
+
+    //handle profile pic
+    if (this.user.images) {
+      this.user.images.forEach(i => {
+        if (i.ImageNumber === 1) {
+          // getProfilePic(i.ImagePath).then(({ data }) => {
+          //   this.image = data;
+          // });
+        }
+      });
+    }
   }
 };
 </script>
