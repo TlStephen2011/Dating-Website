@@ -111,6 +111,24 @@ class UserService {
         })
     }
 
+    getInterests(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const interests = await this.interestsRepository.get(id);
+                resolve({
+                    success: true,
+                    interests
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    error
+                });
+            }
+        })
+
+    }
+
     updateUser(id, user) {
         let updateOptions = {};
 
