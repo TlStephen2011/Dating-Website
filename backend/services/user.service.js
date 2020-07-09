@@ -13,6 +13,27 @@ class UserService {
         this.interestsRepository = interestsRepository;
     }
 
+    getAllUsers() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const users = await this.userRepository.getAll();
+
+                resolve({
+                    success: true,
+                    users
+                });
+
+
+            } catch (error) {
+                reject({
+                    success: false,
+                    error
+                });
+            }
+
+        })
+    }
+
     getUser({ username, email, id }) {
         let userValidator = ValidationFactory.create("user");
         let validFields = {

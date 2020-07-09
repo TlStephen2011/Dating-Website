@@ -70,6 +70,21 @@ class UserRepository {
 
     getAll() {
 
+        const query = "SELECT * FROM users";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, (error, results, fields) => {
+                if ((results && results.length === 0) || !results) {
+                    reject('No Users Found');
+                } else {
+
+                    let users = results.map(x => new User(x));
+
+                    resolve(users);
+                }
+                //return;
+            })
+        });
     }
 
     async getOne({ username, email }) {
@@ -92,8 +107,7 @@ class UserRepository {
 
         return new Promise((resolve, reject) => {
             this.connection.query(query, values, (error, results, fields) => {
-                console.log(error, fields, results);
-                if (results && results == undefined && results.length === 0) {
+                if ((results && results.length === 0) || !results) {
                     reject('User not found');
                 } else {
                     resolve(new User(results[0]));

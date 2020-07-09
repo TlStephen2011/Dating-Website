@@ -7,6 +7,7 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var userRouter = require('./routes/user');
 var imageRouter = require('./routes/image');
+var usersRouter = require('./routes/users');
 
 var cors = require('cors');
 const serviceMiddleware = require("./config/service.middleware");
@@ -66,6 +67,7 @@ app.use(
 app.use("/", indexRouter);
 app.use('/user', userRouter);
 app.use('/image', imageRouter);
+app.use('/users', usersRouter);
 // app.use("/profile", profileRouter);
 // app.use("/dashboard", dashboardRouter);
 // app.use("/ultraSecretRoute", populateDbRoute);

@@ -39,6 +39,25 @@ class BlacklistRepository {
         })
     }
 
+    getAllBlacklistedUsers(id) {
+        const query = "SELECT * FROM blacklist WHERE User = ?";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [id], (err, results) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                if (results && results.length >= 1) {
+                    resolve(results);
+                } else {
+                    resolve(null);
+                }
+            })
+        })
+    }
+
 }
 
 module.exports = BlacklistRepository;

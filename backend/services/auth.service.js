@@ -27,7 +27,7 @@ class AuthService {
                 return;
             }
 
-            this.userRepository.getOne(username)
+            this.userRepository.getOne({ username })
                 .then(user => {
                     Hashing.verify({ password, hash: user.password })
                         .then(async isMatch => {
@@ -49,7 +49,7 @@ class AuthService {
                                 }, jwtSecret, {
                                     expiresIn: "1 days"
                                 });
-                                
+
                                 const updateLastOnlineTime = await this.userRepository.update(user.id, {
                                     lastOnline: new Date().toISOString().slice(0, 19).replace('T', ' ')
                                 });
@@ -137,13 +137,13 @@ class AuthService {
             }
 
             try {
-                const user = await this.userRepository.getOne({username});
+                const user = await this.userRepository.getOne({ username });
                 const reset = await this.userRepository.update(user.id, {
                     forgotPasswordToken: passwordResetToken
                 })
-                
+
                 EmailService.sendForgotPassword(passwordResetToken, user.email, `http://localhost:8080/reset/${user.username}`, (error, info) => {
-                    if (error) throw error;    
+                    if (error) throw error;
                     resolve({
                         success: true,
                         message: `Check your email at ${user.email} to reset your password`
@@ -160,7 +160,7 @@ class AuthService {
                 return;
             }
 
-        })        
+        })
     }
 
     updatePassword(username, token, newPassword) {
@@ -173,7 +173,7 @@ class AuthService {
                     token: "is invalid"
                 }
             }
-            
+
             if (!passwordRe.test(newPassword)) {
                 errReject.errors.password = "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase.";
             }
@@ -184,7 +184,7 @@ class AuthService {
             }
 
             try {
-                const user = await this.userRepository.getOne({username});
+                const user = await this.userRepository.getOne({ username });
                 if (user.forgotPasswordToken !== token) {
                     reject({
                         success: false,
