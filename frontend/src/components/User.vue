@@ -38,9 +38,11 @@ export default {
     if (this.user.images) {
       this.user.images.forEach(i => {
         if (i.ImageNumber === 1) {
-          // getProfilePic(i.ImagePath).then(({ data }) => {
-          //   this.image = data;
-          // });
+          getProfilePic(i.ImagePath).then(response => {
+            this.image =
+              "data:image/jpeg;base64," +
+              Buffer.from(response.data, "binary").toString("base64");
+          });
         }
       });
     }
@@ -49,4 +51,7 @@ export default {
 </script>
 
 <style scoped>
+.v-card__title {
+  color: #555;
+}
 </style>
