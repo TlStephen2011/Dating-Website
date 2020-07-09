@@ -33,7 +33,7 @@ export default {
     verify() {
       const username = this.$route.params.username;
 
-      api.post('/token/' + username, {
+      api.post('/user/activate/' + username, {
         token: this.token
       })
       .then(({data}) => {

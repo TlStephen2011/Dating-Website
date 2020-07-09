@@ -39,7 +39,7 @@ export default {
   methods: {
     login() {
       this.loading = true;
-      api.post('/login', this.user)
+      api.post('/auth', this.user)
         .then(({ data }) => {
           console.log(data);
           this.loading = false;

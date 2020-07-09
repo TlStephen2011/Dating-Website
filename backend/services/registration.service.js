@@ -79,7 +79,7 @@ class RegistrationService {
                                         latitude,
                                         activationToken
                                     }).then(result => {
-                                        EmailService.sendMail(activationToken, email, `http://localhost:8080/user/activate/${username}`, (err, info) => {
+                                        EmailService.sendMail(activationToken, email, `http://localhost:8080/token/${username}`, (err, info) => {
 
                                             if (err) throw err;
 
