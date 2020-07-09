@@ -1,17 +1,13 @@
 <template>
-  <v-card max-width="250">
-    <v-img
-      class="white--text align-end"
-      height="200px"
-      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-    >
+  <v-card max-width="300">
+    <v-img height="100px" :src="image">
       <v-card-title>@{{ user.username }}</v-card-title>
     </v-img>
     <v-card-text>
-      <div>{{ user.bio }}</div>
+      <div>Age: {{ age }}</div>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="orange">Connect</v-btn>
+      <v-btn color="primary">View Profile</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -19,7 +15,17 @@
 <script>
 export default {
   name: "User",
-  props: ["user"]
+  props: ["user"],
+  data() {
+    return {
+      image: "",
+      age: 0
+    };
+  },
+  mounted() {
+    // this.age =
+    //   new Date().getFullYear - new Date(this.user.dateOfBirth).getFullYear();
+  }
 };
 </script>
 

@@ -1,16 +1,10 @@
 <template>
-  <DashboardLayout>
+  <DashboardLayout @navLinkClicked="updateView">
+    <h1>Dashboard</h1>
     <v-container>
-      <h1>Dashboard</h1>
-      <v-row>
-        <v-col :cols="8">
-          <div class="filter-sort">FILTER AND SORT</div>
-          <div class="results">RESULTS</div>
-        </v-col>
-        <v-col :cols="4">
-          <div class="recommendations">RECOMMENDATIONS</div>
-        </v-col>
-      </v-row>
+      <div class="results-grid">
+        <User v-for="user in users" :key="user.id" :user="user"></User>
+      </div>
     </v-container>
   </DashboardLayout>
 </template>
@@ -25,68 +19,26 @@ export default {
     User,
     DashboardLayout
   },
+  created() {
+    this.users = this.$store.state.users;
+  },
   data() {
     return {
-      users: [
-        {
-          id: "1",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "2",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "3",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "4",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "5",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "6",
-          username: "tstpehen",
-          bio: "I am helpful"
-        },
-        {
-          id: "7",
-          username: "tstpehen",
-          bio: "I am helpful"
-        }
-      ]
+      users: []
     };
+  },
+  methods: {
+    updateView(requestedView) {
+      if (requestedView === "Logout") {
+        localStorage.removeItem("token");
+        this.$router.replace("/");
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-/* .grid {
-  margin-top: 25px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 2rem;
-} */
-/* 
-.grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-areas:
-    "filter-sort none"
-    "results recommendations";
-  grid-gap: 1.5rem;
-  margin-top: 50px;
-} */
-
 .recommendations {
   grid-area: recommendations;
   border: 1px solid black;
@@ -110,5 +62,11 @@ export default {
 
 h1 {
   margin: 15px 0px 0px 0px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 25px;
 }
 </style>

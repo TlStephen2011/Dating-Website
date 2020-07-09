@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" max-width="600" outlined :loading="loading">
-    <v-card-title class="">Sign in to your account</v-card-title>
+    <v-card-title class>Sign in to your account</v-card-title>
     <v-card-text>
       <v-form>
         <v-container>
@@ -22,8 +22,7 @@
 </template>
 
 <script>
-
-import { api } from "@/api/api.js"
+import { api } from "@/api/api.js";
 
 export default {
   name: "Login",
@@ -38,15 +37,25 @@ export default {
   },
   methods: {
     login() {
-      this.loading = true;
-      api.post('/login', this.user)
-        .then(({ data }) => {
-          console.log(data);
-          this.loading = false;
+      const loader = this.$loading.show({
+        loader: "dots",
+        canCancel: false,
+        color: "#1976d2"
+      });
+
+      api
+        .post("/auth", this.user)
+        .then(async ({ data }) => {
+          localStorage.setItem("token", data.authToken);
+
+          await this.$store.dispatch("getUsers");
+          this.$router.push("/dashboard");
+          loader.hide();
+          // TODO: handle redirect
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
-          this.loading = false;
+          loader.hide();
         });
     }
   }
