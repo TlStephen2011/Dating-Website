@@ -46,7 +46,9 @@ export default {
         username: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        longitude: 0,
+        latitude: 0
       },
       loading: false
     };
@@ -54,7 +56,7 @@ export default {
   methods: {
     register() {
       this.loading = true;
-      api.post('/signup', this.user)
+      api.post('http://localhost:3000/user', this.user)
         .then(({ data }) => {
           console.log(data);
           this.loading = false;
@@ -64,6 +66,26 @@ export default {
           this.loading = false;
         })
     }
+  },
+  created() {
+    this.$getLocation()
+    .then(coordinates => {
+      console.log(coordinates);
+      this.user.latitude = coordinates.lat;
+      this.user.longitude = coordinates.lng;
+    }).catch(err => {
+      this.axios.get("https://ipinfo.io?token=53234ea778b079")
+      .then((response) => {
+        let data = response.data.loc;
+        console.log(data);
+        let coords = data.split(',');
+        console.log(coords);
+        this.user.latitude = coords[0];
+        this.user.longitude = coords[1];
+      }).catch(err => {
+        console.log(err);
+      })
+    });
   }
 };
 </script>
