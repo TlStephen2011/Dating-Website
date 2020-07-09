@@ -14,12 +14,12 @@ const apiAuth = axios.create({
 });
 
 const getAllUsers = () => apiAuth.get('/users/all');
-const getProfilePic = (path) => apiAuth.get('/image/' + path, {
+const getImage = (path) => apiAuth.get('/image/' + path, {
   responseType: 'arraybuffer'
 });
 
 module.exports = {
   api,
   getAllUsers,
-  getProfilePic
+  getImage
 }

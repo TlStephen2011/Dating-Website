@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { getProfilePic } from "@/api/api";
+import { getImage } from "@/api/api";
 
 export default {
   name: "User",
@@ -37,7 +37,7 @@ export default {
     if (this.user.images) {
       this.user.images.forEach(i => {
         if (i.ImageNumber === 1) {
-          getProfilePic(i.ImagePath).then(response => {
+          getImage(i.ImagePath).then(response => {
             this.image =
               "data:image/jpeg;base64," +
               Buffer.from(response.data, "binary").toString("base64");
