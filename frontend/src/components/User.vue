@@ -1,10 +1,9 @@
 <template>
   <v-card max-width="250">
-    <v-img height="150px" :src="image">
-      <v-card-title>@{{ user.username }}</v-card-title>
-    </v-img>
+    <v-img height="150px" :src="image"></v-img>
     <v-card-text>
       <div>Age: {{ age }}</div>
+      <div class="username">@{{ user.username }}</div>
     </v-card-text>
     <v-card-actions>
       <v-btn color="primary">View Profile</v-btn>
@@ -51,7 +50,8 @@ export default {
 </script>
 
 <style scoped>
-.v-card__title {
-  color: #555;
+.username {
+  font-weight: bolder;
+  font-size: 1.2rem;
 }
 </style>
