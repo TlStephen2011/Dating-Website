@@ -34,6 +34,23 @@ class MatchingService {
     getAllIncomingRequests(id) {
         return new Promise(async (resolve, reject) => {
             try {
+                const ret = await this.matchesRepository.getIncomingRequests(id);
+                resolve({
+                    success: true,
+                    incoming: ret
+                })
+            } catch (error) {
+                reject({
+                    success: false,
+                    error
+                })
+            }
+        });
+    }
+
+    getAllOutgoingRequests(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
                 const requests = await this.matchesRepository.getRequests(id);
                 resolve({
                     success: true,

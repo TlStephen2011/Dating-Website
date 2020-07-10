@@ -51,8 +51,30 @@ export default {
           this.$store
             .dispatch("getUsers")
             .then(() => {
-              this.$router.push("/dashboard");
-              loader.hide();
+              this.$store
+                .dispatch("getMatches")
+                .then(res => {
+                  this.$store
+                    .dispatch("getOutgoingRequests")
+                    .then(res => {
+                      this.$store
+                        .dispatch("getIncomingRequests")
+                        .then(res => {
+                          this.$router.push("/dashboard");
+                          loader.hide();
+                        })
+                        .catch(err => {
+                          console.log(err);
+                        });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                      loader.hide();
+                    });
+                })
+                .catch(err => {
+                  console.log(err);
+                });
             })
             .catch(err => {
               console.log(err);

@@ -13,12 +13,21 @@ router.get("/", authService.checkAuth, async function (req, res, next) {
 
 router.get('/requests', authService.checkAuth, async (req, res) => {
     try {
-        const ret = await req.services.matchingService.getAllIncomingRequests(req.user.id);
+        const ret = await req.services.matchingService.getAllOutgoingRequests(req.user.id);
         res.json(ret);
     } catch (error) {
         res.json(error)
     }
 })
+
+router.get('/incoming-requests', authService.checkAuth, async (req, res) => {
+    try {
+        const ret = await req.services.matchingService.getAllIncomingRequests(req.user.id);
+        res.json(ret);
+    } catch (error) {
+        res.json(error);
+    }
+});
 
 router.post('/connect', authService.checkAuth, async (req, res) => {
     try {
@@ -39,7 +48,15 @@ router.post('/connect', authService.checkAuth, async (req, res) => {
 
 router.put('/accept', authService.checkAuth, async (resolve, reject) => {
     try {
-
+        const acceptTo = req.body.userTo;
+        if (!acceptTo) {
+            throw new Error({
+                success: false,
+                error: "AcceptTo must be specified in the body"
+            });
+        }
+        const ret = await req.services.matchingService.acceptRequests(req.user.id, acceptTo);
+        res.json(ret);
     } catch (error) {
         res.json(error);
     }

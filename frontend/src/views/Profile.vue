@@ -28,8 +28,11 @@
                 <p>Los Angeles, United States</p>
               </span>-->
             </div>
-            <div class="profile-actions">
-              <v-btn color="primary">Connect</v-btn>
+            <div class="profile-actions" v-if="outgoingRequest">
+              <v-btn color="primary" :disabled="true">Request Pending</v-btn>
+            </div>
+            <div class="profile-actions" v-else-if="!isMatch">
+              <v-btn color="primary" @click="addMatch">Connect</v-btn>
             </div>
           </div>
           <div class="tags">
@@ -67,7 +70,7 @@
 
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
-import { getImage } from "@/api/api";
+import { getImage, createMatch } from "@/api/api";
 
 export default {
   components: {
@@ -86,6 +89,18 @@ export default {
   computed: {
     isMyProfile() {
       return this.$route.params.user === "me";
+    },
+    isMatch() {
+      const user = this.$store.state.matches.find(
+        u => u.Match === this.user.id
+      );
+      return user ? true : false;
+    },
+    outgoingRequest() {
+      const user = this.$store.state.outgoingRequests.find(
+        u => u.Match === this.user.id
+      );
+      return user ? true : false;
     }
   },
   created() {
@@ -134,6 +149,17 @@ export default {
       } else {
         // show me
       }
+    }
+  },
+  methods: {
+    addMatch() {
+      createMatch(this.user.id)
+        .then(({ data }) => {
+          this.$store.commit("addOutgoingRequest", this.user.id);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
