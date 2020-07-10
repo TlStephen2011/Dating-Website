@@ -46,7 +46,7 @@ router.post('/connect', authService.checkAuth, async (req, res) => {
     }
 });
 
-router.put('/accept', authService.checkAuth, async (resolve, reject) => {
+router.put('/accept', authService.checkAuth, async (req, res) => {
     try {
         const acceptTo = req.body.userTo;
         if (!acceptTo) {
@@ -55,7 +55,7 @@ router.put('/accept', authService.checkAuth, async (resolve, reject) => {
                 error: "AcceptTo must be specified in the body"
             });
         }
-        const ret = await req.services.matchingService.acceptRequests(req.user.id, acceptTo);
+        const ret = await req.services.matchingService.acceptRequest(req.user.id, acceptTo);
         res.json(ret);
     } catch (error) {
         res.json(error);

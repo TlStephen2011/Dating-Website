@@ -51,14 +51,14 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         getMatches()
-	.then(res => {
-          console.log(res.data);
-	})
-	.catch(err => {
-          console.log(err);
-	});
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err);
+          });
         console.log("Polled");
-      }, 1500)
+      }, 1500);
     }
   },
   created() {

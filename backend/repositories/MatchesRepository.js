@@ -25,7 +25,7 @@ class MatchesRepository {
         const query = "UPDATE matches SET matches.Mutual = ? WHERE matches.User = ? AND matches.Match = ?";
 
         return new Promise((resolve, reject) => {
-            this.connection.query(query, [Mutual, User, Match], (err, results) => {
+            this.connection.query(query, [Mutual, Match, User], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
