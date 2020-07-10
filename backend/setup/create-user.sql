@@ -1,6 +1,6 @@
-CREATE USER 'matcha'@'localhost' IDENTIFIED BY 'matcha';
+CREATE USER 'matcha'@'127.0.0.1' IDENTIFIED BY 'matcha';
 
-GRANT ALL PRIVILEGES ON * . * TO 'matcha'@'localhost';
+GRANT ALL PRIVILEGES ON * . * TO 'matcha'@'127.0.0.1';
 
 #
 # Starting with MySQL 8.0.4, the MySQL team changed the 
@@ -12,4 +12,4 @@ GRANT ALL PRIVILEGES ON * . * TO 'matcha'@'localhost';
 # See the MySQL Reference Manual for details: 
 # https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html
 #
-ALTER USER 'matcha'@'localhost' IDENTIFIED WITH mysql_native_password BY 'matcha';
+ALTER USER 'matcha'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY 'matcha';

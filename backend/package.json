@@ -24,7 +24,8 @@
     "nodemailer": "^6.4.8",
     "request": "^2.88.2",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "websocket": "^1.0.31"
   },
   "devDependencies": {
     "@types/express": "^4.17.6",

@@ -23,6 +23,7 @@ router.get('/requests', authService.checkAuth, async (req, res) => {
 router.post('/connect', authService.checkAuth, async (req, res) => {
     try {
         let userToMatch = req.body.userTo;
+	console.log(userToMatch, req.body);
         if (!userToMatch) {
             throw new Error({
                 success: false,

@@ -7,6 +7,7 @@ class MatchesRepository {
     }
 
     save(user, match) {
+	console.log(user, match);
         const query = "INSERT INTO matches(User, Match, Mutual) VALUES (?, ?, ?)";
 
         return new Promise((resolve, reject) => {
