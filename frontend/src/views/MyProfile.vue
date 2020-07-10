@@ -91,6 +91,9 @@ export default {
   },
   created() {
     // find the user
+
+    // fetch my details
+
     const userParam = this.$route.params.user;
 
     if (userParam === "me") {
