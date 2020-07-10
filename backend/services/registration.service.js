@@ -46,9 +46,9 @@ class RegistrationService {
                 .then(user => {
                     reject({
                         success: false,
-                        errors: {
+                        errors: [{
                             username: "username is not unique"
-                        }
+                        }]
                     });
                 })
                 .catch(err => {
@@ -56,9 +56,9 @@ class RegistrationService {
                         .then(user => {
                             reject({
                                 success: false,
-                                errors: {
+                                errors: [{
                                     email: "email is not unique"
-                                }
+                                }]
                             });
                         })
                         .catch(err => {

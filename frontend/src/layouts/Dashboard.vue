@@ -45,24 +45,24 @@ export default {
   components: {},
 
   data: () => ({
-    polling: null
+    // polling: null
   }),
   methods: {
-    pollData() {
-      this.polling = setInterval(() => {
-        getMatches()
-          .then(res => {
-            console.log(res.data);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-        console.log("Polled");
-      }, 1500);
-    }
+    // pollData() {
+    //   this.polling = setInterval(() => {
+    //     getMatches()
+    //       .then(res => {
+    //         console.log(res.data);
+    //       })
+    //       .catch(err => {
+    //         console.log(err);
+    //       });
+    //     console.log("Polled");
+    //   }, 1500);
+    // }
   },
   created() {
-    this.pollData();
+    // this.pollData();
   }
 };
 </script>

@@ -1,5 +1,11 @@
 <template>
   <v-card class="mx-auto" max-width="600" :loading="loading" outlined>
+    <p style="margin: 25px;">{{ message }}</p>
+    <ul class="errors-list">
+      <li v-for="(error, i) in errors" :key="i">
+         {{Object.keys(error)[0] }}: {{ error[Object.keys(error)[0]] }}
+      </li>
+    </ul>
     <v-card-title>Create your account</v-card-title>
     <v-card-text>
       <v-form>
@@ -24,7 +30,7 @@
               <v-text-field type="password" label="Confirm Password" v-model.lazy="user.confirmPassword" required outlined></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-btn color="primary" @click="register">Register</v-btn>
+              <v-btn color="primary" @click="register" :disabled="loading">Register</v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -50,7 +56,9 @@ export default {
         longitude: 0,
         latitude: 0
       },
-      loading: false
+      loading: false,
+      message: "",
+      errors: []
     };
   },
   methods: {
@@ -58,7 +66,14 @@ export default {
       this.loading = true;
       api.post('/user', this.user)
         .then(({ data }) => {
-          console.log(data);
+          if (data.success) {
+            this.message = "You have been registered, check your email for activation";
+          } else {
+            this.errors = data.errors;
+            setTimeout(() => {
+              this.errors = [];
+            }, 10000)
+          }
           this.loading = false;
         })
         .catch((err) => {
@@ -70,16 +85,13 @@ export default {
   created() {
     this.$getLocation()
     .then(coordinates => {
-      console.log(coordinates);
       this.user.latitude = coordinates.lat;
       this.user.longitude = coordinates.lng;
     }).catch(err => {
       this.axios.get("https://ipinfo.io?token=53234ea778b079")
       .then((response) => {
         let data = response.data.loc;
-        console.log(data);
         let coords = data.split(',');
-        console.log(coords);
         this.user.latitude = coords[0];
         this.user.longitude = coords[1];
       }).catch(err => {
@@ -97,5 +109,9 @@ export default {
 
 .v-col {
   margin: 0;
+}
+
+.errors-list {
+  margin: 15px;
 }
 </style>

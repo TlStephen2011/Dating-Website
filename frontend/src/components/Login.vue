@@ -1,6 +1,9 @@
 <template>
   <v-card class="mx-auto" max-width="600" outlined :loading="loading">
     <v-card-title class>Sign in to your account</v-card-title>
+    <ul v-if="Object.keys(error).length !== 0">
+      <li>{{ Object.keys(error)[0] }}: {{ error[Object.keys(error)[0]] }}</li>
+    </ul>
     <v-card-text>
       <v-form>
         <v-container>
@@ -32,7 +35,8 @@ export default {
         username: "",
         password: ""
       },
-      loading: false
+      loading: false,
+      error: {}
     };
   },
   methods: {
@@ -46,6 +50,14 @@ export default {
       api
         .post("/auth", this.user)
         .then(async ({ data }) => {
+          if (!data.success) {
+            this.error = data.errors;
+            setTimeout(() => {
+              this.error = {};
+            }, 5000);
+            loader.hide();
+            return;
+          }
           localStorage.setItem("token", data.authToken);
 
           this.$store
