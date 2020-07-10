@@ -34,6 +34,9 @@
             <div class="profile-actions" v-else-if="!isMatch">
               <v-btn color="primary" @click="addMatch">Connect</v-btn>
             </div>
+            <div class="profile-actions" v-else-if="isMatch">
+              <v-btn color="primary" @click="removeMatch">Unconnect</v-btn>
+            </div>
           </div>
           <div class="tags">
             <v-chip
@@ -92,7 +95,9 @@ export default {
     },
     isMatch() {
       const user = this.$store.state.matches.find(
-        u => u.Match === this.user.id
+        u =>
+          (u.Match === this.user.id || u.User === this.user.id) &&
+          u.Mutual == true
       );
       return user ? true : false;
     },
@@ -160,6 +165,9 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    removeMatch() {
+      //TODO: Implement
     }
   }
 };

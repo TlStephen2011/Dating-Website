@@ -80,20 +80,16 @@ router.post('/activate/:user', (req, res) => {
 
 router.get('/', AuthService.checkAuth, async (req, res) => {
 
-    if (req.user.username === req.query.username) {
-        req.services.userService.getUser({
-            id: req.user.id,
-            username: req.user.username
+    req.services.userService.getUser({
+        id: req.user.id,
+        username: req.user.username
+    })
+        .then(data => {
+            res.status(200).send(data);
         })
-            .then(data => {
-                res.status(200).send(data);
-            })
-            .catch(err => {
-                res.status(400).send(err);
-            });
-    } else {
-        res.status(403).send({ success: false, message: "You may only get you own information for now." });
-    }
+        .catch(err => {
+            res.status(400).send(err);
+        });
 
 })
 

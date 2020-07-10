@@ -36,6 +36,11 @@ const incomingRequests = () => api.get('/matches/incoming-requests', {
     'X-auth-token': localStorage.getItem('token')
   }
 })
+const getMyProfile = () => api.get('/user', {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+})
 
 module.exports = {
   api,
@@ -44,5 +49,6 @@ module.exports = {
   getMatches,
   createMatch,
   outogingRequests,
-  incomingRequests
+  incomingRequests,
+  getMyProfile
 }

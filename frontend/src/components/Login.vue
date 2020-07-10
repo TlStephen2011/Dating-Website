@@ -72,11 +72,20 @@ export default {
                       this.$store
                         .dispatch("getIncomingRequests")
                         .then(res => {
-                          this.$router.push("/dashboard");
-                          loader.hide();
+                          this.$store
+                            .dispatch("getUserProfile")
+                            .then(() => {
+                              this.$router.push("/dashboard");
+                              loader.hide();
+                            })
+                            .catch(err => {
+                              console.log(err);
+                              loader.hide();
+                            });
                         })
                         .catch(err => {
                           console.log(err);
+                          loader.hide();
                         });
                     })
                     .catch(err => {

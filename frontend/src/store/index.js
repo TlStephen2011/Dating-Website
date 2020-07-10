@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getAllUsers, getMatches, outogingRequests, incomingRequests } from '@/api/api';
-
+import { getAllUsers, getMatches, outogingRequests, incomingRequests, getMyProfile } from '@/api/api';
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  plugins: [createPersistedState()],
   state: {
+    user: {},
     users: [],
     matches: [],
     outgoingRequests: [],
@@ -27,6 +29,9 @@ export default new Vuex.Store({
     },
     addOutgoingRequest(state, user) {
       state.outgoingRequests.push({ Match: user });
+    },
+    saveProfile(state, user) {
+      state.user = user;
     }
   },
   actions: {
@@ -45,7 +50,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           const { data } = await getMatches();
-          commit('saveMatches', data.connections[0]);
+          commit('saveMatches', [...data.connections[0], ...data.connections[1]]);
           resolve('Matches saved');
         } catch (error) {
           reject(error);
@@ -68,6 +73,17 @@ export default new Vuex.Store({
         try {
           const { data } = await incomingRequests();
           commit('saveIncomingRequests', data.incoming);
+          resolve('Requests received loaded');
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    async getUserProfile({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const { data } = await getMyProfile();
+          commit('saveProfile', data.user);
           resolve('Requests received loaded');
         } catch (error) {
           reject(error);

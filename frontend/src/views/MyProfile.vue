@@ -2,7 +2,7 @@
   <DashboardLayout>
     <v-container>
       <v-row>
-        <v-col :cols="8">
+        <v-col :cols="12">
           <div class="profile-info">
             <v-avatar tile size="200px">
               <v-img :src="profileImage"></v-img>
@@ -29,7 +29,7 @@
               </span>-->
             </div>
             <div class="profile-actions">
-              <v-btn color="primary">Update Profile</v-btn>
+              <v-btn color="primary" @click="updateProfileDialog = true">Update Profile</v-btn>
               <v-btn color="primary">Incoming Requests</v-btn>
             </div>
           </div>
@@ -42,8 +42,17 @@
             >#{{ interest }}</v-chip>
           </div>
           <div class="bio">
-            <h2>Biography</h2>
-            <p>{{ user.biography }}</p>
+            <div class="heading">
+              <h2>Biography</h2>
+              <span>
+                <v-icon @click="editingBio = true">mdi-pencil</v-icon>
+              </span>
+            </div>
+            <p v-if="!editingBio">{{ user.biography }}</p>
+            <div v-if="editingBio">
+              <v-textarea ref="bio" v-model="updateUser.biography"></v-textarea>
+              <v-btn color="primary" @click="updateBio">SAVE</v-btn>
+            </div>
           </div>
           <div class="profile-pictures">
             <h2>Pictures</h2>
@@ -55,24 +64,84 @@
             </div>
           </div>
         </v-col>
-        <v-col :cols="4" v-if="isMyProfile">
+        <v-col :cols="12">
           <div class="connections">
             <h2>My Connections</h2>
             <v-text-field hide-details label="Search" append-icon="search" class="search-friend"></v-text-field>
+            <div class="user-connections">
+              <User v-for="user in connections" :key="user.id" :user="user"></User>
+            </div>
           </div>
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog v-model="updateProfileDialog" max-width="800">
+      <v-card>
+        <v-card-title class="headline">Update Profile</v-card-title>
+        <v-container class="update-profile-dialog">
+          <p>Errors go here in a ul lol</p>
+          <v-text-field label="First Name" v-model="updateUser.firstName"></v-text-field>
+          <v-text-field label="Last Name" v-model="updateUser.lastName"></v-text-field>
+          <v-select
+            v-model="updateUser.gender"
+            :items="['male', 'female']"
+            append-icon="mdi-arrow-down"
+            label="Gender"
+          ></v-select>
+          <v-select
+            v-model="updateUser.sexuality"
+            :items="['bisexual', 'homosexual', 'heterosexual']"
+            append-icon="mdi-arrow-down"
+            label="Gender"
+          ></v-select>
+          <v-text-field label="Email" type="email" v-model="updateUser.email"></v-text-field>
+          <v-menu
+            ref="menu"
+            v-model="datePicker"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                label="Date of Birth"
+                prepend-icon="event"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="red darken-1" text @click="updateProfileDialog = false">Cancel</v-btn>
+
+          <v-btn color="green darken-1" text @click="updateProfileDialog = false">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </DashboardLayout>
 </template>
 
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
+import User from "@/components/User";
 import { getImage } from "@/api/api";
 
 export default {
   components: {
-    DashboardLayout
+    DashboardLayout,
+    User
   },
   data() {
     return {
@@ -81,63 +150,48 @@ export default {
       image_1: "/defaultprofile.png",
       image_2: "/defaultprofile.png",
       image_3: "/defaultprofile.png",
-      image_4: "/defaultprofile.png"
+      image_4: "/defaultprofile.png",
+      editingBio: false,
+      updateProfileDialog: false,
+      updateUser: {},
+      connections: [],
+      datePicker: false,
+      date: new Date().toISOString().substr(0, 10)
     };
   },
-  computed: {
-    isMyProfile() {
-      return this.$route.params.user === "me";
+  computed: {},
+  created() {
+    this.user = this.$store.state.user;
+    this.updateUser = JSON.parse(JSON.stringify(this.user));
+    let connections = this.$store.state.matches;
+    //build users from ids
+
+    connections.forEach(c => {
+      const matchedUsers = this.$store.state.users.find(
+        u =>
+          (u.id === c.User || u.id === c.Match) &&
+          c.Mutual == true &&
+          this.user.id != u.id
+      );
+      // console.log(matchedUsers);
+      this.connections.push(matchedUsers);
+    });
+
+    if (this.user.dateOfBirth)
+      this.date = new Date(Date.parse(this.user.dateOfBirth))
+        .toISOString()
+        .substr(0, 10);
+  },
+  watch: {
+    updateProfileDialog: function(val) {
+      this.updateUser = JSON.parse(JSON.stringify(this.user));
     }
   },
-  created() {
-    // find the user
-
-    // fetch my details
-
-    const userParam = this.$route.params.user;
-
-    if (userParam === "me") {
-    } else {
-      const userDetails = this.$store.state.users.find(
-        o => o.username === userParam
-      );
-
-      if (userDetails) {
-        this.user = userDetails;
-
-        this.user.images.forEach(i => {
-          // let pos = this.images.map(j => j.ImageNumber).indexOf(i.ImageNumber);
-          // console.log(pos);
-          // this.images.splice(pos, 1);
-          // console.log(this.images);
-          getImage(i.ImagePath).then(response => {
-            let imageData =
-              "data:image/jpeg;base64," +
-              Buffer.from(response.data, "binary").toString("base64");
-            switch (i.ImageNumber) {
-              case 1:
-                this.profileImage = imageData;
-                break;
-              case 2:
-                this.image_1 = imageData;
-                break;
-              case 3:
-                this.image_2 = imageData;
-                break;
-              case 4:
-                this.image_3 = imageData;
-                break;
-              case 5:
-                this.image_4 = imageData;
-                break;
-              default:
-                break;
-            }
-          });
-        });
-      } else {
-        // show me
-      }
+  methods: {
+    updateBio() {
+      // handle bio save to state and api
+      this.editingBio = !this.editingBio;
+      this.user.biography = this.updateUser.biography;
     }
   }
 };
@@ -236,6 +290,7 @@ export default {
 .connections {
   border: 1px solid #ccc;
   padding: 25px;
+  margin-bottom: 100px;
 }
 
 .connections:hover {
@@ -244,5 +299,25 @@ export default {
 
 .search-friend {
   margin-top: 15px;
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.heading span {
+  margin-top: 25px;
+}
+
+.update-profile-dialog {
+  padding: 5px 25px;
+}
+
+.user-connections {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 1rem;
 }
 </style>
