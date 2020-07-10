@@ -39,7 +39,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //setting up cors for frontend access with credentials
 app.use(cors({
-  origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://192.168.8.100:8080'],
+  origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://192.168.8.100:8080',  'http://localhost:8080/'],
   credentials: true
 }));
 

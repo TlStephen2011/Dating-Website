@@ -15,7 +15,6 @@ router.post('/', (req, res) => {
         latitude: req.body.latitude
     })
         .then(data => {
-	    console.log(data);
             res.json(data);
         })
         .catch(err => {

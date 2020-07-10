@@ -45,7 +45,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           const { data } = await getMatches();
-          commit('saveMatches', data.matches);
+          commit('saveMatches', data.connections[0]);
           resolve('Matches saved');
         } catch (error) {
           reject(error);
