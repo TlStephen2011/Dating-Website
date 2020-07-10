@@ -6,7 +6,7 @@
       <div class="username">@{{ user.username }}</div>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary">View Profile</v-btn>
+      <v-btn @click="goToProfile" color="primary">View Profile</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -44,6 +44,11 @@ export default {
           });
         }
       });
+    }
+  },
+  methods: {
+    goToProfile() {
+      this.$router.replace(`/profile/${this.user.username}`);
     }
   }
 };

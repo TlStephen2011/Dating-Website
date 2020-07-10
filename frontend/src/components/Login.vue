@@ -48,9 +48,16 @@ export default {
         .then(async ({ data }) => {
           localStorage.setItem("token", data.authToken);
 
-          await this.$store.dispatch("getUsers");
-          this.$router.push("/dashboard");
-          loader.hide();
+          this.$store
+            .dispatch("getUsers")
+            .then(() => {
+              this.$router.push("/dashboard");
+              loader.hide();
+            })
+            .catch(err => {
+              console.log(err);
+              loader.hide();
+            });
         })
         .catch(err => {
           console.log(err);

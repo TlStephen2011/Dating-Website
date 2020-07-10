@@ -1,22 +1,68 @@
+const e = require("express");
+
 class MatchesRepository {
 
     constructor(dbCon) {
         this.connection = dbCon;
     }
 
-    save() {
+    save(user, match) {
+        const query = "INSERT INTO matches(User, Match, Mutual) VALUES (?, ?, ?)";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [user, match, false], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
+    }
+
+    update({ User, Match, Mutual }) {
+
+        const query = "UPDATE matches SET Mutual = ? WHERE User = ? AND Match = ?";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [User, Match, Mutual], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
 
     }
 
-    delete() {
+    getAll(id) {
+        const query = "SELECT * FROM matches WHERE User = ? AND Mutual = true";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [id], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
 
     }
 
-    update() {
+    getRequests(id) {
+        const query = "SELECT * FROM matches WHERE User = ? AND Mutual = false";
 
-    }
-
-    get() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, [id], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
 
     }
 

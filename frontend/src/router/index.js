@@ -6,6 +6,7 @@ import VerifyToken from "@/views/VerifyToken";
 import Sorry from "@/views/Sorry";
 import Profile from "@/views/Profile";
 import Messages from "@/views/Messages";
+import MyProfile from "@/views/MyProfile";
 
 Vue.use(VueRouter);
 
@@ -31,7 +32,12 @@ const routes = [
     component: Sorry
   },
   {
-    path: "/profile",
+    path: "/profile/me",
+    name: "MyProfile",
+    component: MyProfile
+  },
+  {
+    path: "/profile/:user",
     name: "Profile",
     component: Profile
   },

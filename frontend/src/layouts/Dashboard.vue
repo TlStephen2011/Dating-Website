@@ -9,19 +9,21 @@
           <p>Dashboard</p>
         </v-btn>
       </router-link>
-      <router-link to="/profile">
+      <router-link to="/profile/me" exact>
         <v-btn text @click="$emit('navLinkClicked', 'MyProfile')">
           <p>My Profile</p>
         </v-btn>
       </router-link>
       <router-link to="/messages">
         <v-btn text @click="$emit('navLinkClicked', 'Messages')">
-	        <p>Messages</p>
+          <p>Messages</p>
         </v-btn>
       </router-link>
-      <v-btn text @click="$emit('navLinkClicked', 'Logout')">
-        <p>Logout</p>
-      </v-btn>
+      <router-link to="/">
+        <v-btn text @click="$emit('navLinkClicked', 'Logout')">
+          <p>Logout</p>
+        </v-btn>
+      </router-link>
     </v-app-bar>
     <v-content>
       <slot />

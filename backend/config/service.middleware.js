@@ -9,6 +9,7 @@ const RegistrationService = require('../services/registration.service');
 const UserService = require('../services/user.service');
 const ImageService = require('../services/image.service');
 const BlacklistService = require('../services/blacklist.service');
+const MatchingService = require('../services/matching.service');
 
 module.exports = function (connection) {
     const userRepository = new UserRepository(connection);
@@ -24,7 +25,7 @@ module.exports = function (connection) {
     const userService = new UserService({ userRepository, interestsRepository });
     const imageService = new ImageService({ userRepository, imagesRepository });
     const blacklistService = new BlacklistService({ userRepository, blacklistRepository });
-
+    const matchingService = new MatchingService({ userRepository, matchesRepository });
 
     return (req, res, next) => {
         // add each service onto request
@@ -34,6 +35,7 @@ module.exports = function (connection) {
         req.services.userService = userService;
         req.services.imageService = imageService;
         req.services.blacklistService = blacklistService;
+        req.services.matchingService = matchingService;
 
         next();
     }
