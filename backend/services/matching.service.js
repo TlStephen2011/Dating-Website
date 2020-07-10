@@ -17,10 +17,12 @@ class MatchingService {
     getAllConnections(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                const matches = await this.matchesRepository.getAll(id);
+		//fixed to check either side of the connection
+                const initiated = await this.matchesRepository.getAllInitiated(id);
+                const matched = await this.matchesRepository.getAllMatched(id);
                 resolve({
                     success: true,
-                    matches
+                    connections: [matched, initiated]
                 })
             } catch (error) {
                 reject({
@@ -28,7 +30,7 @@ class MatchingService {
                     error
                 });
             }
-        })
+        });
     }
 
     getAllIncomingRequests(id) {

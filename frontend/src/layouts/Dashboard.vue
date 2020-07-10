@@ -38,13 +38,32 @@
 </template>
 
 <script>
+import { getMatches } from "@/api/api.js";
+
 export default {
   name: "DashboardLayout",
   components: {},
 
   data: () => ({
-    //
-  })
+    polling: null
+  }),
+  methods: {
+    pollData() {
+      this.polling = setInterval(() => {
+        getMatches()
+	.then(res => {
+          console.log(res.data);
+	})
+	.catch(err => {
+          console.log(err);
+	});
+        console.log("Polled");
+      }, 1500)
+    }
+  },
+  created() {
+    this.pollData();
+  }
 };
 </script>
 

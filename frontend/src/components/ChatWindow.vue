@@ -7,15 +7,15 @@
   import 'vue-advanced-chat/dist/vue-advanced-chat.css'
  
   export default {
-	      components: {
-		            ChatWindow
-		          },
-	      data() {
-		            return {
-				            rooms: [],
-				            messages: [],
-				            currentUserId: 1234
-				          }
-		          }
-	    }
+	components: {
+		ChatWindow
+	},
+	data() {
+		return {
+			rooms: [],
+			messages: [],
+			currentUserId: 0
+		}
+	}
+}
 </script>

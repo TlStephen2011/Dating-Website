@@ -9,6 +9,7 @@ var userRouter = require('./routes/user');
 var imageRouter = require('./routes/image');
 var usersRouter = require('./routes/users');
 var matchesRouter = require('./routes/matches');
+var chatRouter = require('./routes/chat');
 
 var cors = require('cors');
 const serviceMiddleware = require("./config/service.middleware");
@@ -70,6 +71,7 @@ app.use('/user', userRouter);
 app.use('/image', imageRouter);
 app.use('/users', usersRouter);
 app.use('/matches', matchesRouter);
+app.use('/chat', chatRouter);
 // app.use("/profile", profileRouter);
 // app.use("/dashboard", dashboardRouter);
 // app.use("/ultraSecretRoute", populateDbRoute);
