@@ -6,7 +6,9 @@ import { getAllUsers } from '@/api/api';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    users: []
+  },
   mutations: {
     saveUsers(state, users) {
       state.users = users;
@@ -14,8 +16,15 @@ export default new Vuex.Store({
   },
   actions: {
     async getUsers({ commit }) {
-      const { data } = await getAllUsers();
-      commit('saveUsers', data.users);
+      return new Promise(async (resolve, reject) => {
+        try {
+          const { data } = await getAllUsers();
+          commit('saveUsers', data.users);
+          resolve('Added users');
+        } catch (error) {
+          reject(error);
+        }
+      })
     }
   },
   modules: {}

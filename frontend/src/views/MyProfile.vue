@@ -29,7 +29,8 @@
               </span>-->
             </div>
             <div class="profile-actions">
-              <v-btn color="primary">Connect</v-btn>
+              <v-btn color="primary">Update Profile</v-btn>
+              <v-btn color="primary">Incoming Requests</v-btn>
             </div>
           </div>
           <div class="tags">

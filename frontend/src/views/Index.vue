@@ -28,6 +28,9 @@ export default {
     updateView(requestedView) {
       this.dynamicComponent = requestedView;
     }
+  },
+  created() {
+    localStorage.clear();
   }
 };
 </script>

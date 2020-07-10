@@ -5,17 +5,16 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-const apiAuth = axios.create({
-  baseURL: 'http://localhost:3000/',
+const getAllUsers = () => api.get('/users/all', {
   headers: {
-    'Content-Type': 'application/json',
     'X-auth-token': localStorage.getItem('token')
-  },
+  }
 });
-
-const getAllUsers = () => apiAuth.get('/users/all');
-const getImage = (path) => apiAuth.get('/image/' + path, {
-  responseType: 'arraybuffer'
+const getImage = (path) => api.get('/image/' + path, {
+  responseType: 'arraybuffer',
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
 });
 
 module.exports = {

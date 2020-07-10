@@ -8,6 +8,7 @@ var indexRouter = require("./routes/index");
 var userRouter = require('./routes/user');
 var imageRouter = require('./routes/image');
 var usersRouter = require('./routes/users');
+var matchesRouter = require('./routes/matches');
 
 var cors = require('cors');
 const serviceMiddleware = require("./config/service.middleware");
@@ -37,7 +38,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //setting up cors for frontend access with credentials
 app.use(cors({
-  origin: ['http://127.0.0.1:8080', 'http://localhost:8080'],
+  origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://192.168.8.100:8080'],
   credentials: true
 }));
 
@@ -68,6 +69,7 @@ app.use("/", indexRouter);
 app.use('/user', userRouter);
 app.use('/image', imageRouter);
 app.use('/users', usersRouter);
+app.use('/matches', matchesRouter);
 // app.use("/profile", profileRouter);
 // app.use("/dashboard", dashboardRouter);
 // app.use("/ultraSecretRoute", populateDbRoute);
