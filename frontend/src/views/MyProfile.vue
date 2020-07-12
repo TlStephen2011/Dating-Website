@@ -92,7 +92,7 @@
             v-model="updateUser.sexuality"
             :items="['bisexual', 'homosexual', 'heterosexual']"
             append-icon="mdi-arrow-down"
-            label="Gender"
+            label="Sexuality"
           ></v-select>
           <v-text-field label="Email" type="email" v-model="updateUser.email"></v-text-field>
           <v-menu
@@ -106,9 +106,9 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="date"
+                v-model="updateUser.dateOfBirth"
                 label="Date of Birth"
-                prepend-icon="event"
+                append-icon="event"
                 readonly
                 v-bind="attrs"
                 v-on="on"
@@ -117,16 +117,22 @@
             <v-date-picker v-model="date" no-title scrollable>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+              <v-btn text color="primary" @click="updateDate">OK</v-btn>
             </v-date-picker>
           </v-menu>
+          <v-text-field label="Password" type="password" v-model="updateUser.password"></v-text-field>
+          <v-text-field
+            label="Confirm Password"
+            type="password"
+            v-model="updateUser.confirmPassword"
+          ></v-text-field>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="red darken-1" text @click="updateProfileDialog = false">Cancel</v-btn>
+          <v-btn color="red darken-1" text @click="updateProfile('cancel')">Cancel</v-btn>
 
-          <v-btn color="green darken-1" text @click="updateProfileDialog = false">Save</v-btn>
+          <v-btn color="green darken-1" text @click="updateProfile('save')">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -192,6 +198,24 @@ export default {
       // handle bio save to state and api
       this.editingBio = !this.editingBio;
       this.user.biography = this.updateUser.biography;
+    },
+    updateDate() {
+      this.updateUser.dateOfBirth = this.date;
+      this.$refs.menu.save(this.date);
+    },
+    updateProfile(payload) {
+      if (payload === "save") {
+        // update user with new info
+        this.user.firstName = this.updateUser.firstName;
+        this.user.lastName = this.updateUser.lastName;
+        this.user.email = this.updateUser.email;
+        this.user.gender = this.updateUser.gender;
+        this.user.sexuality = this.updateUser.sexuality;
+        this.user.dateOfBirth = this.updateUser.dateOfBirth;
+        // save user in state
+        // save user in api
+      }
+      this.updateProfileDialog = false;
     }
   }
 };
@@ -266,7 +290,7 @@ export default {
 
 .profile-pictures {
   margin: 15px 0px;
-  margin-bottom: 50px;
+  /* margin-bottom: 50px; */
   min-width: 800px;
   border: 1px solid #ccc;
   padding: 25px;
