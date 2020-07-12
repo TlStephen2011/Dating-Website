@@ -50,14 +50,14 @@ class RegistrationValidator {
             errors.push({ email: "Must be a valid email address" });
         }
 
-        const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
+        const passwordRe = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 
         if (!password) {
             isValid = false;
             errors.push({ password: "Is a required field" });
         } else if (!passwordRe.test(password)) {
             isValid = false;
-            errors.push({ password: "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase." });
+            errors.push({ password: "Must be minimum 8 characters, at least 1 uppercase, at least 1 special character, at least 1 numeric, at least 1 lowercase." });
         }
 
         return {
