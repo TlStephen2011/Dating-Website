@@ -50,7 +50,7 @@
             </div>
             <p v-if="!editingBio">{{ user.biography }}</p>
             <div v-if="editingBio">
-              <v-textarea ref="bio" v-model="updateUser.biography"></v-textarea>
+              <v-textarea ref="bio" v-model="biography"></v-textarea>
               <v-btn color="primary" @click="updateBio">SAVE</v-btn>
             </div>
           </div>
@@ -80,52 +80,57 @@
         <v-card-title class="headline">Update Profile</v-card-title>
         <v-container class="update-profile-dialog">
           <p>Errors go here in a ul lol</p>
-          <v-text-field label="First Name" v-model="updateUser.firstName"></v-text-field>
-          <v-text-field label="Last Name" v-model="updateUser.lastName"></v-text-field>
-          <v-select
-            v-model="updateUser.gender"
-            :items="['male', 'female']"
-            append-icon="mdi-arrow-down"
-            label="Gender"
-          ></v-select>
-          <v-select
-            v-model="updateUser.sexuality"
-            :items="['bisexual', 'homosexual', 'heterosexual']"
-            append-icon="mdi-arrow-down"
-            label="Sexuality"
-          ></v-select>
-          <v-text-field label="Email" type="email" v-model="updateUser.email"></v-text-field>
-          <v-menu
-            ref="menu"
-            v-model="datePicker"
-            :close-on-content-click="false"
-            :return-value.sync="date"
-            transition="scale-transition"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="updateUser.dateOfBirth"
-                label="Date of Birth"
-                append-icon="event"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="date" no-title scrollable>
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="updateDate">OK</v-btn>
-            </v-date-picker>
-          </v-menu>
-          <v-text-field label="Password" type="password" v-model="updateUser.password"></v-text-field>
-          <v-text-field
-            label="Confirm Password"
-            type="password"
-            v-model="updateUser.confirmPassword"
-          ></v-text-field>
+          <v-form>
+            <v-text-field
+              label="First Name"
+              required
+              :error-messages="firstNameErrors"
+              v-model="firstName"
+              @input="$v.firstName.$touch()"
+              @blur="$v.firstName.$touch()"
+            ></v-text-field>
+            <v-text-field label="Last Name" v-model="lastName"></v-text-field>
+            <v-select
+              v-model="gender"
+              :items="['male', 'female']"
+              append-icon="mdi-arrow-down"
+              label="Gender"
+            ></v-select>
+            <v-select
+              v-model="sexuality"
+              :items="['bisexual', 'homosexual', 'heterosexual']"
+              append-icon="mdi-arrow-down"
+              label="Sexuality"
+            ></v-select>
+            <v-text-field label="Email" type="email" v-model="email"></v-text-field>
+            <v-menu
+              ref="menu"
+              v-model="datePicker"
+              :close-on-content-click="false"
+              :return-value.sync="date"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateOfBirth"
+                  label="Date of Birth"
+                  append-icon="event"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="date" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="updateDate">OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+            <v-text-field label="Password" type="password" v-model="password"></v-text-field>
+            <v-text-field label="Confirm Password" type="password" v-model="confirmPassword"></v-text-field>
+          </v-form>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -143,6 +148,7 @@
 import DashboardLayout from "@/layouts/Dashboard";
 import User from "@/components/User";
 import { getImage } from "@/api/api";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -159,16 +165,45 @@ export default {
       image_4: "/defaultprofile.png",
       editingBio: false,
       updateProfileDialog: false,
-      updateUser: {},
+      // updateUser: {},
       connections: [],
       datePicker: false,
-      date: new Date().toISOString().substr(0, 10)
+      date: new Date().toISOString().substr(0, 10),
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      gender: "",
+      sexuality: "",
+      dateOfBirth: ""
     };
   },
-  computed: {},
+  validations: {
+    firstName: { required }
+  },
+  computed: {
+    firstNameErrors() {
+      const errors = [];
+      if (!this.$v.firstName.$dirty) return errors;
+      !this.$v.firstName.required && errors.push("First Name is required");
+      return errors;
+    }
+  },
   created() {
     this.user = this.$store.state.user;
-    this.updateUser = JSON.parse(JSON.stringify(this.user));
+    // this.updateUser = JSON.parse(JSON.stringify(this.user));
+
+    this.firstName = this.user.firstName;
+    this.lastName = this.user.lastName;
+    this.biography = this.user.biography;
+    this.password = "12345678";
+    this.confirmPassword = "12345678";
+    this.email = this.user.email;
+    this.dateOfBirth = this.user.dateOfBirth;
+    this.gender = this.user.gender;
+    this.sexuality = this.user.sexuality;
+
     let connections = this.$store.state.matches;
     //build users from ids
 
@@ -190,28 +225,36 @@ export default {
   },
   watch: {
     updateProfileDialog: function(val) {
-      this.updateUser = JSON.parse(JSON.stringify(this.user));
+      this.firstName = this.user.firstName;
+      this.lastName = this.user.lastName;
+      this.biography = this.user.biography;
+      this.password = "12345678";
+      this.confirmPassword = "12345678";
+      this.email = this.user.email;
+      this.dateOfBirth = this.user.dateOfBirth;
+      this.gender = this.user.gender;
+      this.sexuality = this.user.sexuality;
     }
   },
   methods: {
     updateBio() {
       // handle bio save to state and api
       this.editingBio = !this.editingBio;
-      this.user.biography = this.updateUser.biography;
+      this.user.biography = this.biography;
     },
     updateDate() {
-      this.updateUser.dateOfBirth = this.date;
+      this.dateOfBirth = this.date;
       this.$refs.menu.save(this.date);
     },
     updateProfile(payload) {
       if (payload === "save") {
         // update user with new info
-        this.user.firstName = this.updateUser.firstName;
-        this.user.lastName = this.updateUser.lastName;
-        this.user.email = this.updateUser.email;
-        this.user.gender = this.updateUser.gender;
-        this.user.sexuality = this.updateUser.sexuality;
-        this.user.dateOfBirth = this.updateUser.dateOfBirth;
+        this.user.firstName = this.firstName;
+        this.user.lastName = this.lastName;
+        this.user.email = this.email;
+        this.user.gender = this.gender;
+        this.user.sexuality = this.sexuality;
+        this.user.dateOfBirth = this.dateOfBirth;
         // save user in state
         // save user in api
       }

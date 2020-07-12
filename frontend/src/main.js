@@ -12,9 +12,12 @@ import VueAxios from 'vue-axios'
 import Loading from "vue-loading-overlay";
 import 'vue-loading-overlay/dist/vue-loading.css';
 import VuejsPaginate from 'vuejs-paginate';
+import Vuelidate from 'vuelidate'
+
 
 // Vue.component('paginate', Paginate);
 Vue.component('paginate', VuejsPaginate)
+Vue.use(Vuelidate)
 Vue.use(Loading);
 Vue.use(VueAxios, axios)
 Vue.use(VueGeolocation);
