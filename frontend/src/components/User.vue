@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="250">
+  <v-card max-width="250px">
     <v-img height="150px" :src="image"></v-img>
     <v-card-text>
       <div>Age: {{ age }}</div>

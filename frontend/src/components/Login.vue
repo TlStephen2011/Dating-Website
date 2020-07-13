@@ -9,10 +9,25 @@
         <v-container>
           <v-row dense>
             <v-col cols="12">
-              <v-text-field label="Username" v-model="user.username" outlined></v-text-field>
+              <v-text-field
+                label="Username"
+                :error-messages="usernameErrors"
+                @input="$v.user.username.$touch()"
+                @blur="$v.user.username.$touch()"
+                v-model="user.username"
+                outlined
+              ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-text-field type="password" label="Password" v-model="user.password" outlined></v-text-field>
+              <v-text-field
+                type="password"
+                label="Password"
+                :error-messages="passwordErrors"
+                @input="$v.user.password.$touch()"
+                @blur="$v.user.password.$touch()"
+                v-model="user.password"
+                outlined
+              ></v-text-field>
             </v-col>
             <v-col cols="12">
               <v-btn color="primary" @click="login">Login</v-btn>
@@ -26,6 +41,7 @@
 
 <script>
 import { api } from "@/api/api.js";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "Login",
@@ -39,8 +55,33 @@ export default {
       error: {}
     };
   },
+  computed: {
+    usernameErrors() {
+      const errors = [];
+      if (!this.$v.user.username.$dirty) return errors;
+      !this.$v.user.username.required && errors.push("Username is required");
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.user.password.$dirty) return errors;
+      !this.$v.user.password.required && errors.push("Password is required");
+      return errors;
+    }
+  },
+  validations() {
+    return {
+      user: {
+        username: { required },
+        password: { required }
+      }
+    };
+  },
   methods: {
     login() {
+      this.$v.user.$touch();
+      if (!this.$v.user.$pending || this.$v.user.$error) return;
+
       const loader = this.$loading.show({
         loader: "dots",
         canCancel: false,

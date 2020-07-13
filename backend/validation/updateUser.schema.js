@@ -20,9 +20,9 @@ module.exports = {
         in: ['body'],
         optional: true,
         matches: {
-            options: [/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/]
+            options: [new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")]
         },
-        errorMessage: "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase."
+        errorMessage: "Must be minimum 8 characters, at least 1 uppercase, at least 1 special character, at least 1 numeric, at least 1 lowercase."
     },
     longitude: {
         in: ['body'],

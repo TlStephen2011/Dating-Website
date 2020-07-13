@@ -89,7 +89,13 @@
               @input="$v.firstName.$touch()"
               @blur="$v.firstName.$touch()"
             ></v-text-field>
-            <v-text-field label="Last Name" v-model="lastName"></v-text-field>
+            <v-text-field
+              label="Last Name"
+              v-model="lastName"
+              :error-messages="lastNameErrors"
+              @input="$v.lastName.$touch()"
+              @blur="$v.lastName.$touch()"
+            ></v-text-field>
             <v-select
               v-model="gender"
               :items="['male', 'female']"
@@ -102,7 +108,15 @@
               append-icon="mdi-arrow-down"
               label="Sexuality"
             ></v-select>
-            <v-text-field label="Email" type="email" v-model="email"></v-text-field>
+            <v-text-field
+              label="Email"
+              type="email"
+              v-model="email"
+              :error-messages="emailErrors"
+              @input="$v.email.$touch()"
+              @blur="$v.email.$touch()"
+              :hint="'If you change your email you will need to reactivate your account'"
+            ></v-text-field>
             <v-menu
               ref="menu"
               v-model="datePicker"
@@ -120,16 +134,32 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  :error-messages="dateOfBirthErrors"
+                  @input="$v.dateOfBirth.$touch()"
+                  @blur="$v.dateOfBirth.$touch()"
                 ></v-text-field>
               </template>
               <v-date-picker v-model="date" no-title scrollable>
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="closeMenu">Cancel</v-btn>
                 <v-btn text color="primary" @click="updateDate">OK</v-btn>
               </v-date-picker>
             </v-menu>
-            <v-text-field label="Password" type="password" v-model="password"></v-text-field>
-            <v-text-field label="Confirm Password" type="password" v-model="confirmPassword"></v-text-field>
+            <v-text-field
+              label="Password"
+              type="password"
+              :error-messages="passwordErrors"
+              @input="$v.password.$touch()"
+              v-model="password"
+            ></v-text-field>
+            <v-text-field
+              label="Confirm Password"
+              type="password"
+              :error-messages="confirmPasswordErrors"
+              @input="$v.confirmPassword.$touch()"
+              @blur="$v.confirmPassword.$touch()"
+              v-model="confirmPassword"
+            ></v-text-field>
           </v-form>
         </v-container>
         <v-card-actions>
@@ -148,7 +178,14 @@
 import DashboardLayout from "@/layouts/Dashboard";
 import User from "@/components/User";
 import { getImage } from "@/api/api";
-import { required } from "vuelidate/lib/validators";
+import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
+import { isPastDate } from "@/validators/dateOfBirth";
+import {
+  hasMinimumOneLowercase,
+  hasMinimumOneUppercase,
+  hasMinimumOneNumeric,
+  hasMinimumOneSpecial
+} from "@/validators/password";
 
 export default {
   components: {
@@ -179,8 +216,25 @@ export default {
       dateOfBirth: ""
     };
   },
-  validations: {
-    firstName: { required }
+  validations() {
+    return {
+      firstName: { required },
+      lastName: { required },
+      email: { required, email },
+      dateOfBirth: { isPastDate },
+      password: {
+        hasMinimumOneLowercase,
+        hasMinimumOneUppercase,
+        hasMinimumOneNumeric,
+        hasMinimumOneSpecial,
+        minLength: minLength(8),
+        sameAs: sameAs("confirmPassword")
+      },
+      confirmPassword: {
+        required,
+        sameAs: sameAs("password")
+      }
+    };
   },
   computed: {
     firstNameErrors() {
@@ -188,6 +242,49 @@ export default {
       if (!this.$v.firstName.$dirty) return errors;
       !this.$v.firstName.required && errors.push("First Name is required");
       return errors;
+    },
+    lastNameErrors() {
+      const errors = [];
+      if (!this.$v.lastName.$dirty) return errors;
+      !this.$v.lastName.required && errors.push("Last Name is required");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.required && errors.push("Email is required");
+      !this.$v.email.email && errors.push("Must be a valid email address");
+      return errors;
+    },
+    dateOfBirthErrors() {
+      const errors = [];
+      if (!this.$v.dateOfBirth.$dirty) return errors;
+      !this.$v.dateOfBirth.isPastDate &&
+        errors.push("Must be a valid date of birth");
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.hasMinimumOneLowercase &&
+        errors.push("Must contain at least 1 lowercase letter");
+      !this.$v.password.hasMinimumOneUppercase &&
+        errors.push("Must contain at least 1 uppercase letter");
+      !this.$v.password.hasMinimumOneNumeric &&
+        errors.push("Must contain at least 1 numeric character");
+      !this.$v.password.hasMinimumOneSpecial &&
+        errors.push("Must contain at least 1 special character");
+      !this.$v.password.minLength &&
+        errors.push("Must be a minimum of 8 characters");
+      !this.$v.confirmPassword.sameAs && errors.push("Passwords must match");
+      return errors;
+    },
+    confirmPasswordErrors() {
+      const errors = [];
+      if (!this.$v.confirmPassword.$dirty) return errors;
+      !this.$v.confirmPassword.required &&
+        errors.push("Confirm password is required");
+      !this.$v.confirmPassword.sameAs && errors.push("Passwords must match");
     }
   },
   created() {
@@ -237,6 +334,9 @@ export default {
     }
   },
   methods: {
+    closeMenu() {
+      this.$refs.menu.isActive = false;
+    },
     updateBio() {
       // handle bio save to state and api
       this.editingBio = !this.editingBio;
