@@ -79,7 +79,8 @@
       <v-card>
         <v-card-title class="headline">Update Profile</v-card-title>
         <v-container class="update-profile-dialog">
-          <p>Errors go here in a ul lol</p>
+          <p>{{ error }}</p>
+          <p v-for="err in errsArr" :key="err">{{err}}</p>
           <v-form>
             <v-text-field
               label="First Name"
@@ -165,9 +166,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="red darken-1" text @click="updateProfile('cancel')">Cancel</v-btn>
+          <v-btn color="red darken-1" text :disabled="busy" @click="updateProfile('cancel')">Cancel</v-btn>
 
-          <v-btn color="green darken-1" text @click="updateProfile('save')">Save</v-btn>
+          <v-btn color="green darken-1" :disabled="busy" text @click="updateProfile('save')">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -177,7 +178,7 @@
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
 import User from "@/components/User";
-import { getImage } from "@/api/api";
+import { getImage, updateProfile } from "@/api/api";
 import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
 import { isPastDate } from "@/validators/dateOfBirth";
 import {
@@ -213,7 +214,10 @@ export default {
       confirmPassword: "",
       gender: "",
       sexuality: "",
-      dateOfBirth: ""
+      dateOfBirth: "",
+      error: "",
+      errsArr: [],
+      busy: false
     };
   },
   validations() {
@@ -227,8 +231,7 @@ export default {
         hasMinimumOneUppercase,
         hasMinimumOneNumeric,
         hasMinimumOneSpecial,
-        minLength: minLength(8),
-        sameAs: sameAs("confirmPassword")
+        minLength: minLength(8)
       },
       confirmPassword: {
         required,
@@ -276,7 +279,6 @@ export default {
         errors.push("Must contain at least 1 special character");
       !this.$v.password.minLength &&
         errors.push("Must be a minimum of 8 characters");
-      !this.$v.confirmPassword.sameAs && errors.push("Passwords must match");
       return errors;
     },
     confirmPasswordErrors() {
@@ -285,10 +287,18 @@ export default {
       !this.$v.confirmPassword.required &&
         errors.push("Confirm password is required");
       !this.$v.confirmPassword.sameAs && errors.push("Passwords must match");
+      return errors;
     }
   },
   created() {
     this.user = this.$store.state.user;
+
+    if (this.user.dateOfBirth) {
+      this.user.dateOfBirth = new Date(Date.parse(this.user.dateOfBirth))
+        .toLocaleString("za")
+        .substr(0, 10);
+    }
+
     // this.updateUser = JSON.parse(JSON.stringify(this.user));
 
     this.firstName = this.user.firstName;
@@ -325,8 +335,8 @@ export default {
       this.firstName = this.user.firstName;
       this.lastName = this.user.lastName;
       this.biography = this.user.biography;
-      this.password = "12345678";
-      this.confirmPassword = "12345678";
+      this.password = "Password1!";
+      this.confirmPassword = "Password1!";
       this.email = this.user.email;
       this.dateOfBirth = this.user.dateOfBirth;
       this.gender = this.user.gender;
@@ -347,18 +357,78 @@ export default {
       this.$refs.menu.save(this.date);
     },
     updateProfile(payload) {
+      this.error = "";
       if (payload === "save") {
         // update user with new info
-        this.user.firstName = this.firstName;
-        this.user.lastName = this.lastName;
-        this.user.email = this.email;
-        this.user.gender = this.gender;
-        this.user.sexuality = this.sexuality;
-        this.user.dateOfBirth = this.dateOfBirth;
-        // save user in state
+        this.$v.$touch();
+        if (this.$v.$error) return;
+
+        //attemp to send to api
+
+        // build obj to send
+        let updateObj = {};
+
+        if (this.user.firstName !== this.firstName)
+          updateObj.firstName = this.firstName;
+
+        if (this.user.lastName !== this.lastName)
+          updateObj.lastName = this.lastName;
+
+        if (this.user.email !== this.email) updateObj.email = this.email;
+
+        if (this.user.gender !== this.gender) updateObj.gender = this.gender;
+
+        if (this.user.sexuality !== this.sexuality)
+          updateObj.sexuality = this.sexuality;
+
+        if (this.user.dateOfBirth !== this.dateOfBirth)
+          updateObj.dateOfBirth = this.dateOfBirth;
+
+        if (this.user.lastName !== this.lastName)
+          updateObj.lastName = this.lastName;
         // save user in api
+        this.busy = true;
+        updateProfile(updateObj)
+          .then(({ data }) => {
+            if (data.success) {
+              // save user in state
+              if (updateObj.password) delete updateObj.password;
+              Object.keys(updateObj).forEach(u => {
+                this.user[u] = updateObj[u];
+              });
+              this.$store.commit("saveProfile", this.user);
+              if (updateObj.email) {
+                this.$router.push("/");
+              }
+              this.updateProfileDialog = false;
+            } else {
+              if (Array.isArray(data.errors)) {
+                this.errsArr = data.errors;
+              } else {
+                this.error = data.error;
+              }
+            }
+            this.busy = false;
+          })
+          .catch(err => {
+            console.log(err);
+            this.error =
+              "Something went wrong saving your profile, try update it again later.";
+            this.busy = false;
+          });
+      } else if (payload === "cancel") {
+        this.$v.$reset();
+        this.firstName = this.user.firstName;
+        this.lastName = this.user.lastName;
+        this.biography = this.user.biography;
+        this.password = "12345678";
+        this.confirmPassword = "12345678";
+        this.email = this.user.email;
+        this.dateOfBirth = this.user.dateOfBirth;
+        this.gender = this.user.gender;
+        this.sexuality = this.user.sexuality;
+        this.updateProfileDialog = false;
       }
-      this.updateProfileDialog = false;
     }
   }
 };

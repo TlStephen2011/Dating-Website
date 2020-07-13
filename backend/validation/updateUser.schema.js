@@ -61,10 +61,7 @@ module.exports = {
     },
     dateOfBirth: {
         in: ['body'],
-        custom: {
-            options: (value) => !!value && validator.isISO8601(value.toISOString()),
-            errorMessage: "The 'dateOfBirth' field must follow the standard ISO 8601",
-        },
+        isDate: true,
         toDate: true,
         optional: true
     }

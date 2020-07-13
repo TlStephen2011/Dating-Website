@@ -41,6 +41,12 @@ const getMyProfile = () => api.get('/user', {
     'X-auth-token': localStorage.getItem('token')
   }
 })
+const updateProfile = (updateObj) => api.put('/user', updateObj, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+})
+
 
 module.exports = {
   api,
@@ -50,5 +56,6 @@ module.exports = {
   createMatch,
   outogingRequests,
   incomingRequests,
-  getMyProfile
+  getMyProfile,
+  updateProfile
 }

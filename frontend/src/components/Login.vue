@@ -80,7 +80,7 @@ export default {
   methods: {
     login() {
       this.$v.user.$touch();
-      if (!this.$v.user.$pending || this.$v.user.$error) return;
+      if (this.$v.user.$error) return;
 
       const loader = this.$loading.show({
         loader: "dots",

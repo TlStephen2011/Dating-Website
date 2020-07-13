@@ -144,10 +144,18 @@ class UserService {
                 return;
             }
 
+            if (Object.keys(updateOptions).length === 0) {
+                reject({
+                    success: false,
+                    error: "Nothing to update"
+                });
+                return;
+            }
+
             try {
 
                 if (updateOptions.dateOfBirth) {
-                    updateOptions.dateOfBirth = updateOptions.toISOString().slice(0, 19).replace('T', ' ');
+                    updateOptions.dateOfBirth = updateOptions.dateOfBirth.toISOString().slice(0, 19).replace('T', ' ');
                 }
 
                 if (updateOptions.email) {
@@ -168,7 +176,7 @@ class UserService {
                             if (err) throw err;
                             const res = await this.userRepository.update(id, updateOptions);
                             resolve({
-                                sucess: true,
+                                success: true,
                                 message: 'Your profile has been updated'
                             });
                             return;
@@ -178,7 +186,7 @@ class UserService {
                     const user = await this.userRepository.getUserById(id);
                     const res = await this.userRepository.update(id, updateOptions);
                     resolve({
-                        sucess: true,
+                        success: true,
                         message: 'Your profile has been updated'
                     });
                     return;
