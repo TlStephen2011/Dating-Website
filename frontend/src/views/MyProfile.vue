@@ -23,10 +23,10 @@
                 <v-icon>mdi-human-male-female</v-icon>
                 <p>{{ user.sexuality }}</p>
               </span>
-              <!-- <span class="profile-item">
-                <v-icon>mdi-map-marker</v-icon>
-                <p>Los Angeles, United States</p>
-              </span>-->
+              <span class="profile-item">
+                <v-icon>mdi-star</v-icon>
+                <p>{{user.fameRating}}</p>
+              </span>
             </div>
             <div class="profile-actions">
               <v-btn color="primary" @click="updateProfileDialog = true">Update Profile</v-btn>
@@ -50,6 +50,7 @@
             </div>
             <p v-if="!editingBio">{{ user.biography }}</p>
             <div v-if="editingBio">
+              <p>{{bioErr}}</p>
               <v-textarea ref="bio" v-model="biography"></v-textarea>
               <v-btn color="primary" @click="updateBio">SAVE</v-btn>
             </div>
@@ -217,7 +218,8 @@ export default {
       dateOfBirth: "",
       error: "",
       errsArr: [],
-      busy: false
+      busy: false,
+      bioErr: ""
     };
   },
   validations() {
@@ -293,6 +295,9 @@ export default {
   created() {
     this.user = this.$store.state.user;
 
+    // TODO: unescape escaped chars
+    // this.user.biography = htmlspecialchars(this.user.biography);
+
     if (this.user.dateOfBirth) {
       this.user.dateOfBirth = new Date(Date.parse(this.user.dateOfBirth))
         .toLocaleString("za")
@@ -349,8 +354,25 @@ export default {
     },
     updateBio() {
       // handle bio save to state and api
-      this.editingBio = !this.editingBio;
       this.user.biography = this.biography;
+      updateProfile({
+        biography: this.user.biography
+      })
+        .then(data => {
+          if (!data.success) {
+            if (data.errors) {
+              this.bioErr = data.errors;
+            } else {
+              this.bioErr = data.error;
+            }
+          }
+          this.$store.commit("saveProfile", this.user);
+          this.editingBio = !this.editingBio;
+        })
+        .catch(err => {
+          console.log(err);
+          this.editingBio = !this.editingBio;
+        });
     },
     updateDate() {
       this.dateOfBirth = this.date;
