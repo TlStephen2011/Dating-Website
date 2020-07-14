@@ -5,7 +5,7 @@
         <v-col :cols="12">
           <div class="profile-info">
             <v-avatar tile size="200px">
-              <v-img :src="profileImage"></v-img>
+              <v-img :src="profileImage" @click="triggerProfileImage"></v-img>
             </v-avatar>
             <div class="profile-details">
               <span class="profile-item">
@@ -62,12 +62,15 @@
             </div>
           </div>
           <div class="profile-pictures">
-            <h2>Pictures</h2>
+            <h2>
+              Pictures
+              <span class="muted-sub-header">- click on an image to replace it</span>
+            </h2>
             <div class="pictures">
-              <v-img max-height="400px" :src="image_1"></v-img>
-              <v-img max-height="400px" :src="image_2"></v-img>
-              <v-img max-height="400px" :src="image_3"></v-img>
-              <v-img max-height="400px" :src="image_4"></v-img>
+              <v-img max-height="400px" @click="clickImage(1)" :src="image_1"></v-img>
+              <v-img max-height="400px" @click="clickImage(2)" :src="image_2"></v-img>
+              <v-img max-height="400px" @click="clickImage(3)" :src="image_3"></v-img>
+              <v-img max-height="400px" @click="clickImage(4)" :src="image_4"></v-img>
             </div>
           </div>
         </v-col>
@@ -179,6 +182,41 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <input
+      type="file"
+      ref="profileImage"
+      accept="image/*"
+      @change="uploadProfileImage"
+      style="display: none"
+    />
+    <input
+      type="file"
+      ref="image_1"
+      accept="image/*"
+      @change="uploadImage($event, 2)"
+      style="display: none"
+    />
+    <input
+      type="file"
+      ref="image_2"
+      accept="image/*"
+      @change="uploadImage($event, 3)"
+      style="display: none"
+    />
+    <input
+      type="file"
+      ref="image_3"
+      accept="image/*"
+      @change="uploadImage($event, 4)"
+      style="display: none"
+    />
+    <input
+      type="file"
+      ref="image_4"
+      accept="image/*"
+      @change="uploadImage($event, 5)"
+      style="display: none"
+    />
   </DashboardLayout>
 </template>
 
@@ -189,7 +227,9 @@ import {
   getImage,
   updateProfile,
   updateInterests,
-  removeInterests
+  removeInterests,
+  saveProfileImage,
+  saveImage
 } from "@/api/api";
 import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
 import { isPastDate } from "@/validators/dateOfBirth";
@@ -321,6 +361,35 @@ export default {
 
     // this.updateUser = JSON.parse(JSON.stringify(this.user));
 
+    // GET user images
+    if (this.user.images) {
+      this.user.images.forEach(i => {
+        getImage(i.ImagePath).then(response => {
+          let imageData =
+            "data:image/jpeg;base64," +
+            Buffer.from(response.data, "binary").toString("base64");
+          switch (i.ImageNumber) {
+            case 1:
+              this.profileImage = imageData;
+              break;
+            case 2:
+              this.image_1 = imageData;
+              break;
+            case 3:
+              this.image_2 = imageData;
+              break;
+            case 4:
+              this.image_3 = imageData;
+              break;
+            case 5:
+              this.image_4 = imageData;
+              break;
+            default:
+              break;
+          }
+        });
+      });
+    }
     this.firstName = this.user.firstName;
     this.lastName = this.user.lastName;
     this.biography = this.user.biography;
@@ -491,6 +560,138 @@ export default {
           }
         })
         .catch(err => {});
+    },
+    triggerProfileImage() {
+      this.$refs.profileImage.click();
+    },
+    uploadProfileImage(event) {
+      if (event.target.files[0]) {
+        const formData = new FormData();
+        formData.append("profileImage", event.target.files[0]);
+        saveProfileImage(formData)
+          .then(({ data }) => {
+            if (data.success) {
+              // remove any object with 1 as image number
+              if (this.user.images) {
+                this.user.images = this.$store.state.user.images.filter(u => {
+                  return u.ImageNumber !== 1;
+                });
+                this.$store.state.users.images = this.user.images;
+
+                //add new image
+                const newImageObj = {
+                  ImageNumber: 1,
+                  ImagePath: data.image["1"].filename
+                };
+                this.$store.state.user.images.push(newImageObj);
+                getImage(data.image["1"].filename).then(response => {
+                  let imageData =
+                    "data:image/jpeg;base64," +
+                    Buffer.from(response.data, "binary").toString("base64");
+                  this.profileImage = imageData;
+                });
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        console.log("no file");
+      }
+    },
+    clickImage(imageNum) {
+      switch (imageNum) {
+        case 1:
+          this.$refs.image_1.click();
+          break;
+        case 2:
+          this.$refs.image_2.click();
+          break;
+        case 3:
+          this.$refs.image_3.click();
+          break;
+        case 4:
+          this.$refs.image_4.click();
+          break;
+        default:
+          break;
+      }
+    },
+    handleImageState(imageNumber, imagePath) {
+      // save to current user
+      const newImageObj = {
+        ImageNumber: imageNumber,
+        ImagePath: imagePath
+      };
+
+      if (this.user.images) {
+        let filtered = this.user.images.filter(u => {
+          return u.ImageNumber !== imageNumber;
+        });
+        this.user.images = filtered;
+        this.user.images.push(newImageObj);
+      }
+
+      //save to state
+      this.$store.state.user = this.user;
+    },
+    handleImageRender(imageNumber, imagePath) {
+      getImage(imagePath).then(response => {
+        let imageData =
+          "data:image/jpeg;base64," +
+          Buffer.from(response.data, "binary").toString("base64");
+        switch (imageNumber) {
+          case 2:
+            this.image_1 = imageData;
+            break;
+          case 3:
+            this.image_2 = imageData;
+            break;
+          case 4:
+            this.image_3 = imageData;
+            break;
+          case 5:
+            this.image_4 = imageData;
+            break;
+          default:
+            break;
+        }
+      });
+    },
+    async uploadImage(event, imageNum) {
+      if (!event.target.files[0]) return;
+      const formData = new FormData();
+      formData.append("myImage", event.target.files[0]);
+      try {
+        let ret;
+        switch (imageNum) {
+          case 2:
+            ret = await saveImage(2, formData);
+            this.handleImageState(2, ret.data.image.imageNumber.filename);
+            this.handleImageRender(2, ret.data.image.imageNumber.filename);
+            break;
+          case 3:
+            ret = await saveImage(3, formData);
+            this.handleImageState(3, ret.data.image.imageNumber.filename);
+            this.handleImageRender(3, ret.data.image.imageNumber.filename);
+            break;
+          case 4:
+            ret = await saveImage(4, formData);
+            this.handleImageState(4, ret.data.image.imageNumber.filename);
+            this.handleImageRender(4, ret.data.image.imageNumber.filename);
+            break;
+          case 5:
+            ret = await saveImage(5, formData);
+            this.handleImageState(5, ret.data.image.imageNumber.filename);
+            this.handleImageRender(5, ret.data.image.imageNumber.filename);
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
@@ -618,5 +819,9 @@ export default {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 1rem;
+}
+.muted-sub-header {
+  font-size: 0.75rem;
+  color: #777;
 }
 </style>

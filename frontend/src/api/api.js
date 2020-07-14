@@ -64,6 +64,16 @@ const removeInterests = (interests) => api.delete('/user/interests', {
     interests: interests
   }
 });
+const saveProfileImage = (formData) => api.post('/image/profile', formData, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
+const saveImage = (imageNum, formData) => api.post(`/image/${imageNum}`, formData, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
 
 
 module.exports = {
@@ -78,5 +88,7 @@ module.exports = {
   updateProfile,
   getAllInterests,
   updateInterests,
-  removeInterests
+  removeInterests,
+  saveProfileImage,
+  saveImage
 }

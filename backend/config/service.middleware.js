@@ -24,7 +24,7 @@ module.exports = function (connection) {
     // inject required repositories into services
     const authService = new AuthService({ userRepository });
     const registrationService = new RegistrationService({ userRepository });
-    const userService = new UserService({ userRepository, interestsRepository });
+    const userService = new UserService({ userRepository, interestsRepository, imagesRepository });
     const imageService = new ImageService({ userRepository, imagesRepository });
     const blacklistService = new BlacklistService({ userRepository, blacklistRepository });
     const matchingService = new MatchingService({ userRepository, matchesRepository });

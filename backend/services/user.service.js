@@ -7,10 +7,12 @@ class UserService {
 
     constructor({
         userRepository,
-        interestsRepository
+        interestsRepository,
+        imagesRepository
     }) {
         this.userRepository = userRepository;
         this.interestsRepository = interestsRepository;
+        this.imagesRepository = imagesRepository;
     }
 
     getAllUsers() {
@@ -64,11 +66,20 @@ class UserService {
                     delete user.forgotPasswordToken;
                     delete user.activated;
                     this.interestsRepository.get(id).then(interests => {
-                        user.interests = interests;
-                        resolve({
-                            success: true,
-                            user: user
-                        });
+                        this.imagesRepository.get(id).then(images => {
+                            user.interests = interests;
+                            if (images) {
+                                images.forEach(element => {
+                                    delete element.Id;
+                                    delete element.User;
+                                });
+                            }
+                            user.images = images;
+                            resolve({
+                                success: true,
+                                user: user
+                            });
+                        })
                     })
                 })
                 .catch(err => {

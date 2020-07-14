@@ -56,6 +56,7 @@ router.post('/profile', AuthService.checkAuth, async (req, res) => {
                     return;
                 }
                 const result = await req.services.imageService.saveImage(req.user.id, 1, file);
+                result.image = { 1: file };
                 res.json(result);
             } catch (error) {
                 res.json(error);
@@ -93,7 +94,10 @@ router.post('/:id', AuthService.checkAuth, (req, res) => {
 
                 res.json({
                     success: true,
-                    message: "Your image has been uploaded"
+                    message: "Your image has been uploaded",
+                    image: {
+                        imageNumber: file
+                    }
                 });
 
             } catch (error) {

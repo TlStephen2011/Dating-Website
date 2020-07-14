@@ -60,7 +60,6 @@ router.get('/all', AuthService.checkAuth, async (req, res) => {
 })
 
 router.get('/interests', AuthService.checkAuth, async (req, res) => {
-    console.log('HERE');
     try {
         const ret = await req.services.interestsService.getAllInterests();
         res.json(ret);
