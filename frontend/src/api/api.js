@@ -46,6 +46,24 @@ const updateProfile = (updateObj) => api.put('/user', updateObj, {
     'X-auth-token': localStorage.getItem('token')
   }
 })
+const getAllInterests = () => api.get('/users/interests', {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+})
+const updateInterests = (interests) => api.post('/user/interests', { interests }, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
+const removeInterests = (interests) => api.delete('/user/interests', {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  },
+  data: {
+    interests: interests
+  }
+});
 
 
 module.exports = {
@@ -57,5 +75,8 @@ module.exports = {
   outogingRequests,
   incomingRequests,
   getMyProfile,
-  updateProfile
+  updateProfile,
+  getAllInterests,
+  updateInterests,
+  removeInterests
 }

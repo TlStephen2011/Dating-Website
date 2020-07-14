@@ -138,7 +138,13 @@ router.get('/profile', AuthService.checkAuth, async (req, res) => {
 
 router.get('/:imagePath', AuthService.checkAuth, (req, res) => {
     // check valid access rights to image (blacklist | matches) unless profile image
-    var id = req.param('imagePath');
+    var id = req.params.imagePath;
+    if (!id) {
+        res.json({
+            success: false,
+            error: 'No image path specified'
+        });
+    }
     fs.exists(path.join(__dirname, '../images') + '/' + id, function (exists) {
         if (exists) res.sendFile(path.join(__dirname, '../images') + '/' + id)
         else res.json({

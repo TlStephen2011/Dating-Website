@@ -34,12 +34,18 @@
             </div>
           </div>
           <div class="tags">
-            <v-chip
-              v-for="interest of user.interests"
-              :key="interest"
-              class="ma-2"
-              color="secondary"
-            >#{{ interest }}</v-chip>
+            <v-autocomplete
+              class="interest-selector"
+              v-model="interests"
+              :items="stateInterests"
+              outlined
+              chips
+              small-chips
+              label="Interests"
+              multiple
+              @blur="updateAllInterests"
+              @focus="removeAllInterests"
+            ></v-autocomplete>
           </div>
           <div class="bio">
             <div class="heading">
@@ -179,7 +185,12 @@
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
 import User from "@/components/User";
-import { getImage, updateProfile } from "@/api/api";
+import {
+  getImage,
+  updateProfile,
+  updateInterests,
+  removeInterests
+} from "@/api/api";
 import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
 import { isPastDate } from "@/validators/dateOfBirth";
 import {
@@ -219,7 +230,9 @@ export default {
       error: "",
       errsArr: [],
       busy: false,
-      bioErr: ""
+      bioErr: "",
+      interests: [],
+      stateInterests: []
     };
   },
   validations() {
@@ -290,6 +303,9 @@ export default {
         errors.push("Confirm password is required");
       !this.$v.confirmPassword.sameAs && errors.push("Passwords must match");
       return errors;
+    },
+    addInterests() {
+      return this.interests.length <= 5;
     }
   },
   created() {
@@ -297,7 +313,6 @@ export default {
 
     // TODO: unescape escaped chars
     // this.user.biography = htmlspecialchars(this.user.biography);
-
     if (this.user.dateOfBirth) {
       this.user.dateOfBirth = new Date(Date.parse(this.user.dateOfBirth))
         .toLocaleString("za")
@@ -315,6 +330,10 @@ export default {
     this.dateOfBirth = this.user.dateOfBirth;
     this.gender = this.user.gender;
     this.sexuality = this.user.sexuality;
+
+    this.interests = this.user.interests;
+
+    this.stateInterests = this.$store.state.interests;
 
     let connections = this.$store.state.matches;
     //build users from ids
@@ -451,6 +470,27 @@ export default {
         this.sexuality = this.user.sexuality;
         this.updateProfileDialog = false;
       }
+    },
+    updateAllInterests() {
+      updateInterests(this.interests)
+        .then(({ data }) => {
+          if (data.success) {
+            this.$store.state.user.interests = this.interests;
+          } else {
+            this.interests = [];
+          }
+        })
+        .catch(err => {
+          this.interests = [];
+        });
+    },
+    removeAllInterests() {
+      removeInterests(this.interests)
+        .then(({ data }) => {
+          if (!data.success) {
+          }
+        })
+        .catch(err => {});
     }
   }
 };

@@ -183,5 +183,20 @@ class InterestsRepository {
         })
     }
 
+    getAll() {
+        const query = "SELECT interests.Interest FROM interests";
+
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
+
+    }
+
 }
 module.exports = InterestsRepository;

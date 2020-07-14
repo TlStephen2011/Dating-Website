@@ -11,6 +11,7 @@ const ImageService = require('../services/image.service');
 const BlacklistService = require('../services/blacklist.service');
 const MatchingService = require('../services/matching.service');
 const ChatService = require('../services/chat.service');
+const InterestsService = require('../services/interests.service');
 
 module.exports = function (connection) {
     const userRepository = new UserRepository(connection);
@@ -27,7 +28,8 @@ module.exports = function (connection) {
     const imageService = new ImageService({ userRepository, imagesRepository });
     const blacklistService = new BlacklistService({ userRepository, blacklistRepository });
     const matchingService = new MatchingService({ userRepository, matchesRepository });
-    const chatService = new ChatService({userRepository, matchesRepository, chatRepository});
+    const chatService = new ChatService({ userRepository, matchesRepository, chatRepository });
+    const interestsService = new InterestsService({ interestsRepository });
 
     return (req, res, next) => {
         // add each service onto request
@@ -39,6 +41,7 @@ module.exports = function (connection) {
         req.services.blacklistService = blacklistService;
         req.services.matchingService = matchingService;
         req.services.chatService = chatService;
+        req.services.interestsService = interestsService;
 
         next();
     }

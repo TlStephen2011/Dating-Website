@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getAllUsers, getMatches, outogingRequests, incomingRequests, getMyProfile } from '@/api/api';
+import { getAllUsers, getMatches, outogingRequests, incomingRequests, getMyProfile, getAllInterests } from '@/api/api';
 import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
@@ -12,7 +12,8 @@ export default new Vuex.Store({
     users: [],
     matches: [],
     outgoingRequests: [],
-    incomingRequests: []
+    incomingRequests: [],
+    interests: []
   },
   mutations: {
     saveUsers(state, users) {
@@ -32,6 +33,9 @@ export default new Vuex.Store({
     },
     saveProfile(state, user) {
       state.user = user;
+    },
+    saveInterests(state, interests) {
+      state.interests = interests;
     }
   },
   actions: {
@@ -85,6 +89,17 @@ export default new Vuex.Store({
           const { data } = await getMyProfile();
           commit('saveProfile', data.user);
           resolve('Requests received loaded');
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    async getInterests({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const { data } = await getAllInterests();
+          commit('saveInterests', data.interests);
+          resolve('Interests loaded');
         } catch (error) {
           reject(error);
         }

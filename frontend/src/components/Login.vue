@@ -116,8 +116,16 @@ export default {
                           this.$store
                             .dispatch("getUserProfile")
                             .then(() => {
-                              this.$router.push("/dashboard");
-                              loader.hide();
+                              this.$store
+                                .dispatch("getInterests")
+                                .then(() => {
+                                  this.$router.push("/dashboard");
+                                  loader.hide();
+                                })
+                                .catch(err => {
+                                  console.log(err);
+                                  loader.hide();
+                                });
                             })
                             .catch(err => {
                               console.log(err);

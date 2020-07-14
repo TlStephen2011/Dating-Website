@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const AuthService = require('../services/auth.service');
-const updateUserSchema = require('../validation/updateUser.schema');
-const { validationResult, checkSchema } = require("express-validator");
 
 function buildUserFields(users, req) {
 
@@ -61,5 +59,14 @@ router.get('/all', AuthService.checkAuth, async (req, res) => {
     }
 })
 
+router.get('/interests', AuthService.checkAuth, async (req, res) => {
+    console.log('HERE');
+    try {
+        const ret = await req.services.interestsService.getAllInterests();
+        res.json(ret);
+    } catch (error) {
+        res.json(error);
+    }
+})
 
 module.exports = router;
