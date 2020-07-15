@@ -10,7 +10,6 @@
           :max="100"
           :min="0"
           class="align-center"
-          @change="filterAge"
         ></v-range-slider>
       </v-col>
       <!-- Location Slider -->
@@ -23,7 +22,6 @@
           ticks="always"
           tick-size="3"
           :tick-labels="locationLabels"
-          @change="filterLocation"
         ></v-slider>
       </v-col>
     </v-row>
@@ -43,7 +41,6 @@
           solo
           multiple
           @change="search=''"
-          @blur="filterByInterests"
         >
           <template v-slot:selection="{ attr, on, item, selected }">
             <v-chip
@@ -80,6 +77,22 @@
           <v-radio label="Descending" value="descending"></v-radio>
         </v-radio-group>
       </v-col>
+      <v-col :cols="3">
+        <p>Sexuality</p>
+        <v-checkbox class="ma-0 pa-0" v-model="sexuality" label="Heterosexual" value="heterosexual"></v-checkbox>
+        <v-checkbox class="ma-0 pa-0" v-model="sexuality" label="Homosexual" value="homosexual"></v-checkbox>
+        <v-checkbox class="ma-0 pa-0" v-model="sexuality" label="Bisexual" value="bisexual"></v-checkbox>
+      </v-col>
+      <v-col :cols="3">
+        <p>Gender</p>
+        <v-checkbox class="ma-0 pa-0" v-model="gender" label="Male" value="male"></v-checkbox>
+        <v-checkbox class="ma-0 pa-0" v-model="gender" label="Female" value="female"></v-checkbox>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col :cols="12">
+        <v-btn color="secondary" style="width:100%" @click="sendFilters">Apply Filters</v-btn>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -91,21 +104,28 @@ export default {
       ageRange: [0, 100],
       locationVal: 5,
       locationLabels: ["< 1km", "< 10km", "< 100km", "< 500km", "all"],
-      fameRatingSort: "ascending",
+      fameRatingSort: "",
       interestsFilter: [],
       search: null,
-      ageSort: "ascending"
+      ageSort: "",
+      sexuality: ["heterosexual", "bisexual", "homosexual"],
+      gender: ["male", "female"]
     };
   },
   methods: {
-    filterAge() {
-      console.log(this.ageRange);
-    },
-    filterLocation() {
-      console.log(this.locationVal);
-    },
-    filterByInterests() {
-      console.log(this.interestsFilter);
+    sendFilters() {
+      const filters = {
+        ageRange: this.ageRange,
+        locationVal: this.locationVal,
+        locationLabels: this.locationLabels,
+        fameRatingSort: this.fameRatingSort,
+        interestsFilter: this.interestsFilter,
+        ageSort: this.ageSort,
+        sexuality: this.sexuality,
+        gender: this.gender
+      };
+
+      this.$emit("filterBy", filters);
     }
   },
   computed: {

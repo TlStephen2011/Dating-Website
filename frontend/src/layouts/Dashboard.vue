@@ -80,7 +80,7 @@ export default {
 
 .search-bar {
   margin-left: 20px;
-  max-width: 600px;
+  max-width: 400px;
 }
 
 a {

@@ -2,7 +2,7 @@
   <v-card max-width="250px">
     <v-img height="150px" :src="image"></v-img>
     <v-card-text>
-      <div>Age: {{ age }}</div>
+      <div>Age: {{ user.age }}</div>
       <div class="username">@{{ user.username }}</div>
     </v-card-text>
     <v-card-actions>
@@ -19,19 +19,19 @@ export default {
   props: ["user"],
   data() {
     return {
-      image: "/defaultprofile.png",
-      age: 0
+      image: "/defaultprofile.png"
+      // age: 0
     };
   },
   mounted() {
     // handle age
-    if (!this.user.dateOfBirth) {
-      this.age = "Unknown";
-    } else {
-      this.age =
-        new Date().getFullYear() -
-        new Date(Date.parse(this.user.dateOfBirth)).getFullYear();
-    }
+    // if (!this.user.dateOfBirth) {
+    //   this.age = "Unknown";
+    // } else {
+    //   this.age =
+    //     new Date().getFullYear() -
+    //     new Date(Date.parse(this.user.dateOfBirth)).getFullYear();
+    // }
 
     //handle profile pic
     if (this.user.images) {

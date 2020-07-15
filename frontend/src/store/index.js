@@ -17,6 +17,21 @@ export default new Vuex.Store({
   },
   mutations: {
     saveUsers(state, users) {
+
+      // add user age onto obj
+      if (users) {
+        users.forEach(u => {
+          if (!u.dateOfBirth) {
+            u.age = "Unknown";
+          } else {
+            u.age =
+              new Date().getFullYear() -
+              new Date(Date.parse(u.dateOfBirth)).getFullYear();
+          }
+        })
+
+      }
+
       state.users = users;
     },
     saveMatches(state, matches) {
