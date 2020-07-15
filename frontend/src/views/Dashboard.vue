@@ -2,6 +2,7 @@
   <DashboardLayout @navLinkClicked="updateView">
     <v-container v-if="users">
       <h1>Dashboard</h1>
+      <SearchFilterSort />
       <div class="results-grid">
         <User v-for="user in users" :key="user.id" :user="user"></User>
       </div>
@@ -32,12 +33,14 @@
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
 import User from "@/components/User";
+import SearchFilterSort from "@/components/SearchFilterSort";
 
 export default {
   name: "Dashboard",
   components: {
     User,
-    DashboardLayout
+    DashboardLayout,
+    SearchFilterSort
   },
   created() {
     // calulate num pages required
