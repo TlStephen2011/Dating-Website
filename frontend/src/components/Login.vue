@@ -119,6 +119,7 @@ export default {
                               this.$store
                                 .dispatch("getInterests")
                                 .then(() => {
+                                  this.$store.commit("updateDistances");
                                   this.$router.push("/dashboard");
                                   loader.hide();
                                 })

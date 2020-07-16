@@ -155,6 +155,31 @@ export default {
       } else if (fameRatingSort !== "") {
         this.sortByFameRating(fameRatingSort);
       }
+
+      switch (locationVal) {
+        case 0:
+          this.filteredUsers = this.filteredUsers.filter(u => {
+            u.distance <= 1;
+          });
+          break;
+        case 1:
+          this.filteredUsers = this.filteredUsers.filter(u => {
+            u.distance <= 10;
+          });
+          break;
+        case 2:
+          this.filteredUsers = this.filteredUsers.filter(u => {
+            u.distance <= 100;
+          });
+          break;
+        case 3:
+          this.filteredUsers = this.filteredUsers.filter(u => {
+            u.distance <= 500;
+          });
+          break;
+        default:
+          break;
+      }
     }
   },
   computed: {

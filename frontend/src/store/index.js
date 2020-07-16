@@ -51,6 +51,16 @@ export default new Vuex.Store({
     },
     saveInterests(state, interests) {
       state.interests = interests;
+    },
+    updateDistances(state) {
+      if (state.user.latitude && state.user.longitude) {
+        state.users.forEach(u => {
+          const from = new google.maps.LatLng({ lat: state.user.latitude, lng: state.user.longitude });
+          const to = new google.maps.LatLng({ lat: u.latitude, lng: u.longitude });
+          u.distance =
+            google.maps.geometry.spherical.computeDistanceBetween(from, to) / 1000;
+        })
+      }
     }
   },
   actions: {

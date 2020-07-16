@@ -3,6 +3,7 @@
     <v-img height="150px" :src="image"></v-img>
     <v-card-text>
       <div>Age: {{ user.age }}</div>
+      <div>{{ user.distance.toFixed(2) }}km away</div>
       <div class="username">@{{ user.username }}</div>
     </v-card-text>
     <v-card-actions>

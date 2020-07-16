@@ -102,7 +102,7 @@ export default {
   data() {
     return {
       ageRange: [0, 100],
-      locationVal: 5,
+      locationVal: 4,
       locationLabels: ["< 1km", "< 10km", "< 100km", "< 500km", "all"],
       fameRatingSort: "",
       interestsFilter: [],
