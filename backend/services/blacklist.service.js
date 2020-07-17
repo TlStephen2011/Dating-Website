@@ -44,6 +44,20 @@ class BlacklistService {
         });
     }
 
+    getAllBlacklisted(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const blacklistedUsers = await this.blacklistRepository.getAllBlacklistedUsers(id);
+                resolve(blacklistedUsers);
+            } catch (error) {
+                reject({
+                    success: false,
+                    error
+                });
+            }
+        });
+    }
+
 }
 
 module.exports = BlacklistService;

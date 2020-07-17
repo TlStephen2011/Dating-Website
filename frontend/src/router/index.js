@@ -7,6 +7,8 @@ import Sorry from "@/views/Sorry";
 import Profile from "@/views/Profile";
 import Messages from "@/views/Messages";
 import MyProfile from "@/views/MyProfile";
+import Forgot from "@/views/Forgot";
+import Reset from "@/views/Reset";
 
 Vue.use(VueRouter);
 
@@ -45,6 +47,16 @@ const routes = [
     path: "/messages",
     name: "Messages",
     component: Messages
+  },
+  {
+    path: "/forgot",
+    name: "Forgot",
+    component: Forgot
+  },
+  {
+    path: "/reset/:username",
+    name: "Reset",
+    component: Reset
   }
 ];
 

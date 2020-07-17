@@ -33,6 +33,11 @@
               <v-btn color="primary" @click="login">Login</v-btn>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-btn @click="$router.push('/forgot')">Forgot Password</v-btn>
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
     </v-card-text>
@@ -119,9 +124,18 @@ export default {
                               this.$store
                                 .dispatch("getInterests")
                                 .then(() => {
-                                  this.$store.commit("updateDistances");
-                                  this.$router.push("/dashboard");
-                                  loader.hide();
+                                  this.$store
+                                    .dispatch("fetchBlacklist")
+                                    .then(() => {
+                                      this.$store.commit("updateDistances");
+                                      this.$store.commit("filterUsers");
+                                      this.$router.push("/dashboard");
+                                      loader.hide();
+                                    })
+                                    .catch(err => {
+                                      console.log(err);
+                                      loader.hide();
+                                    });
                                 })
                                 .catch(err => {
                                   console.log(err);

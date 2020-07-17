@@ -165,7 +165,7 @@ class AuthService {
 
     updatePassword(username, token, newPassword) {
         return new Promise(async (resolve, reject) => {
-            const passwordRe = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
+            const passwordRe = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
             const errReject = {
                 success: false,
                 errors: {
@@ -175,7 +175,7 @@ class AuthService {
             }
 
             if (!passwordRe.test(newPassword)) {
-                errReject.errors.password = "Must be exactly 8 characters, 2 uppercase, one special character, 2 digits, 3 lowercase.";
+                errReject.errors.password = "Must be minimum 8 characters, at least 1 uppercase, at least 1 special character, at least 1 numeric, at least 1 lowercase.";
             }
 
             if (!username || username.length <= 3 || !token || token.length !== 5 || !passwordRe.test(newPassword)) {

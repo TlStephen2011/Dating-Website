@@ -28,14 +28,19 @@
                 <p>Los Angeles, United States</p>
               </span>-->
             </div>
-            <div class="profile-actions" v-if="outgoingRequest">
-              <v-btn color="primary" :disabled="true">Request Pending</v-btn>
-            </div>
-            <div class="profile-actions" v-else-if="!isMatch">
-              <v-btn color="primary" @click="addMatch">Connect</v-btn>
-            </div>
-            <div class="profile-actions" v-else-if="isMatch">
-              <v-btn color="primary" @click="removeMatch">Unconnect</v-btn>
+            <div v-if="filledInProfile" class="profile-actions">
+              <div v-if="outgoingRequest">
+                <v-btn color="primary" :disabled="true">Request Pending</v-btn>
+              </div>
+              <div v-else-if="!isMatch">
+                <v-btn color="primary" @click="addMatch">Connect</v-btn>
+              </div>
+              <div v-else-if="isMatch">
+                <v-btn color="primary" @click="removeMatch">Unconnect</v-btn>
+              </div>
+              <div>
+                <v-btn color="#faa" style="color: black;" @click="removeUser">Block User</v-btn>
+              </div>
             </div>
           </div>
           <div class="tags">
@@ -73,7 +78,7 @@
 
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
-import { getImage, createMatch } from "@/api/api";
+import { getImage, createMatch, blacklistUser } from "@/api/api";
 
 export default {
   components: {
@@ -106,6 +111,9 @@ export default {
         u => u.Match === this.user.id
       );
       return user ? true : false;
+    },
+    filledInProfile() {
+      return this.$store.state.user.images.length > 0;
     }
   },
   created() {
@@ -152,7 +160,7 @@ export default {
           });
         });
       } else {
-        // show me
+        this.$router.push("/dashboard");
       }
     }
   },
@@ -165,6 +173,37 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    async removeUser() {
+      const userId = this.user.id;
+      const username = this.user.username;
+      try {
+        const res = await blacklistUser(username);
+        const data = res.data;
+        if (data.success) {
+          // remove user from state
+          this.$store.state.users = this.$store.state.users.filter(function(u) {
+            if (u.id !== userId) {
+              return u;
+            }
+          });
+          // remove user from matches if exists
+          this.$store.state.matches = this.$store.state.matches.filter(function(
+            u
+          ) {
+            if (u.User !== userId || u.Matches !== userId) return u;
+          });
+          // remove user from incoming requests if exists
+          this.$store.state.incomingRequests = this.$store.state.incomingRequests.filter(
+            function(u) {
+              if (u.User !== userId || u.Matches !== userId) return u;
+            }
+          );
+          this.$router.push("/dashboard");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     removeMatch() {
       //TODO: Implement

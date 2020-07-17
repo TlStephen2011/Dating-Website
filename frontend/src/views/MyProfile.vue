@@ -30,7 +30,7 @@
             </div>
             <div class="profile-actions">
               <v-btn color="primary" @click="updateProfileDialog = true">Update Profile</v-btn>
-              <v-btn color="primary">Incoming Requests</v-btn>
+              <v-btn color="primary" @click="incomingRequestsDialog = true">Incoming Requests</v-btn>
             </div>
           </div>
           <div class="tags">
@@ -156,21 +156,6 @@
                 <v-btn text color="primary" @click="updateDate">OK</v-btn>
               </v-date-picker>
             </v-menu>
-            <v-text-field
-              label="Password"
-              type="password"
-              :error-messages="passwordErrors"
-              @input="$v.password.$touch()"
-              v-model="password"
-            ></v-text-field>
-            <v-text-field
-              label="Confirm Password"
-              type="password"
-              :error-messages="confirmPasswordErrors"
-              @input="$v.confirmPassword.$touch()"
-              @blur="$v.confirmPassword.$touch()"
-              v-model="confirmPassword"
-            ></v-text-field>
           </v-form>
         </v-container>
         <v-card-actions>
@@ -217,6 +202,10 @@
       @change="uploadImage($event, 5)"
       style="display: none"
     />
+    <IncomingRequestsDialog
+      :dialog="incomingRequestsDialog"
+      @close="incomingRequestsDialog = false"
+    />
   </DashboardLayout>
 </template>
 
@@ -239,11 +228,13 @@ import {
   hasMinimumOneNumeric,
   hasMinimumOneSpecial
 } from "@/validators/password";
+import IncomingRequestsDialog from "@/components/IncomingRequestsDialog";
 
 export default {
   components: {
     DashboardLayout,
-    User
+    User,
+    IncomingRequestsDialog
   },
   data() {
     return {
@@ -272,7 +263,8 @@ export default {
       busy: false,
       bioErr: "",
       interests: [],
-      stateInterests: []
+      stateInterests: [],
+      incomingRequestsDialog: false
     };
   },
   validations() {
@@ -280,18 +272,7 @@ export default {
       firstName: { required },
       lastName: { required },
       email: { required, email },
-      dateOfBirth: { isPastDate },
-      password: {
-        hasMinimumOneLowercase,
-        hasMinimumOneUppercase,
-        hasMinimumOneNumeric,
-        hasMinimumOneSpecial,
-        minLength: minLength(8)
-      },
-      confirmPassword: {
-        required,
-        sameAs: sameAs("password")
-      }
+      dateOfBirth: { isPastDate }
     };
   },
   computed: {

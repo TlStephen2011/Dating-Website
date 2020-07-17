@@ -74,7 +74,26 @@ const saveImage = (imageNum, formData) => api.post(`/image/${imageNum}`, formDat
     'X-auth-token': localStorage.getItem('token')
   }
 });
-
+const requestPasswordReset = (user) => api.get(`/user/password-reset/${user}`);
+const updatePassword = (user, token, password) => api.put(`/user/password-reset/${user}`, {
+  token,
+  password
+});
+const acceptRequest = (userTo) => api.put(`/matches/accept`, { userTo }, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
+const blacklistUser = (blacklistUser) => api.post(`/users/blacklist`, { blacklistUser }, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
+const getBlacklist = () => api.get(`/users/blacklist`, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  }
+});
 
 module.exports = {
   api,
@@ -90,5 +109,10 @@ module.exports = {
   updateInterests,
   removeInterests,
   saveProfileImage,
-  saveImage
+  saveImage,
+  requestPasswordReset,
+  updatePassword,
+  acceptRequest,
+  blacklistUser,
+  getBlacklist
 }
