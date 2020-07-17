@@ -46,6 +46,7 @@ export default {
   },
   created() {
     // calulate num pages required
+    if (!localStorage.getItem("token")) this.$router.push("/sorry");
     this.filteredUsers = this.$store.state.users;
     this.users = this.filteredUsers.slice(0, 20);
   },

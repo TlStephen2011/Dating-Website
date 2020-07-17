@@ -17,7 +17,7 @@ class MatchingService {
     getAllConnections(id) {
         return new Promise(async (resolve, reject) => {
             try {
-		//fixed to check either side of the connection
+                //fixed to check either side of the connection
                 const initiated = await this.matchesRepository.getAllInitiated(id);
                 const matched = await this.matchesRepository.getAllMatched(id);
                 resolve({

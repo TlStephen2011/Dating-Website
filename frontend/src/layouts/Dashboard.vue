@@ -1,8 +1,20 @@
 <template>
   <div>
     <v-app-bar app color="primary" dark>
-      <v-toolbar-title>Matcha</v-toolbar-title>
-      <v-text-field hide-details label="Search" append-icon="search" class="search-bar"></v-text-field>
+      <v-toolbar-title class="heading-matcha">Matcha</v-toolbar-title>
+      <!-- <v-text-field hide-details label="Search" append-icon="search" class="search-bar"></v-text-field> -->
+      <v-autocomplete
+        class="search-bar"
+        v-model="model"
+        :items="usernames"
+        chips
+        clearable
+        hide-details
+        hide-selected
+        label="Search"
+        solo
+      ></v-autocomplete>
+
       <v-spacer></v-spacer>
       <router-link to="/dashboard">
         <v-btn text>
@@ -46,23 +58,16 @@ export default {
 
   data: () => ({
     // polling: null
+    model: null,
+    usernames: []
   }),
-  methods: {
-    // pollData() {
-    //   this.polling = setInterval(() => {
-    //     getMatches()
-    //       .then(res => {
-    //         console.log(res.data);
-    //       })
-    //       .catch(err => {
-    //         console.log(err);
-    //       });
-    //     console.log("Polled");
-    //   }, 1500);
-    // }
-  },
   created() {
-    // this.pollData();
+    this.usernames = this.$store.state.users.map(u => u.username);
+  },
+  watch: {
+    model: function() {
+      if (this.model) this.$router.replace({ path: `/profile/${this.model}` });
+    }
   }
 };
 </script>
@@ -79,11 +84,13 @@ export default {
 }
 
 .search-bar {
-  margin-left: 20px;
   max-width: 400px;
 }
 
 a {
   text-decoration: none;
+}
+.heading-matcha {
+  margin-right: 50px;
 }
 </style>

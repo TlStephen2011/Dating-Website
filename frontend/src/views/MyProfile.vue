@@ -330,6 +330,7 @@ export default {
     }
   },
   created() {
+    if (!localStorage.getItem("token")) this.$router.push("/sorry");
     this.user = this.$store.state.user;
 
     // TODO: unescape escaped chars

@@ -116,8 +116,50 @@ export default {
       return this.$store.state.user.images.length > 0;
     }
   },
+  watch: {
+    "$route.params.user": function() {
+      const userParam = this.$route.params.user;
+      const userDetails = this.$store.state.users.find(
+        o => o.username === userParam
+      );
+
+      if (userDetails) {
+        this.user = userDetails;
+
+        this.user.images.forEach(i => {
+          getImage(i.ImagePath).then(response => {
+            let imageData =
+              "data:image/jpeg;base64," +
+              Buffer.from(response.data, "binary").toString("base64");
+            switch (i.ImageNumber) {
+              case 1:
+                this.profileImage = imageData;
+                break;
+              case 2:
+                this.image_1 = imageData;
+                break;
+              case 3:
+                this.image_2 = imageData;
+                break;
+              case 4:
+                this.image_3 = imageData;
+                break;
+              case 5:
+                this.image_4 = imageData;
+                break;
+              default:
+                break;
+            }
+          });
+        });
+      } else {
+        this.$router.push("/dashboard");
+      }
+    }
+  },
   created() {
     // find the user
+    if (!localStorage.getItem("token")) this.$router.push("/sorry");
     const userParam = this.$route.params.user;
 
     if (userParam === "me") {
