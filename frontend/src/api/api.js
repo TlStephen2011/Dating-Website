@@ -94,6 +94,15 @@ const getBlacklist = () => api.get(`/users/blacklist`, {
     'X-auth-token': localStorage.getItem('token')
   }
 });
+const removeConnection = (id) => api.delete(`/matches/disconnect`, {
+  headers: {
+    'X-auth-token': localStorage.getItem('token')
+  },
+  data: {
+    disconnect: id
+  }
+});
+
 
 module.exports = {
   api,
@@ -114,5 +123,6 @@ module.exports = {
   updatePassword,
   acceptRequest,
   blacklistUser,
-  getBlacklist
+  getBlacklist,
+  removeConnection
 }

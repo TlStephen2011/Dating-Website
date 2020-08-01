@@ -32,7 +32,7 @@
               <div v-if="outgoingRequest">
                 <v-btn color="primary" :disabled="true">Request Pending</v-btn>
               </div>
-              <div v-else-if="!isMatch">
+              <div v-else-if="!isMatch || matchRemoved">
                 <v-btn color="primary" @click="addMatch">Connect</v-btn>
               </div>
               <div v-else-if="isMatch">
@@ -78,7 +78,12 @@
 
 <script>
 import DashboardLayout from "@/layouts/Dashboard";
-import { getImage, createMatch, blacklistUser } from "@/api/api";
+import {
+  getImage,
+  createMatch,
+  blacklistUser,
+  removeConnection
+} from "@/api/api";
 
 export default {
   components: {
@@ -87,6 +92,7 @@ export default {
   data() {
     return {
       user: {},
+      matchRemoved: false,
       profileImage: "/defaultprofile.png",
       image_1: "/defaultprofile.png",
       image_2: "/defaultprofile.png",
@@ -248,7 +254,21 @@ export default {
       }
     },
     removeMatch() {
-      //TODO: Implement
+      removeConnection(this.user.id)
+        .then(({ data }) => {
+          if (data.success) {
+            const newMatches = this.$store.state.matches.filter(u => {
+              if (u.User !== this.user.id && u.Match !== this.user.id) return u;
+            });
+            this.$store.commit("saveMatches", newMatches);
+            this.matchRemoved = true;
+          } else {
+            console.log(data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

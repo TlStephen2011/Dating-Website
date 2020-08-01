@@ -62,4 +62,21 @@ router.put('/accept', authService.checkAuth, async (req, res) => {
     }
 })
 
+router.delete('/disconnect', authService.checkAuth, async (req, res) => {
+    try {
+        const disconnectFrom = req.body.disconnect;
+        if (!disconnectFrom) {
+            throw new Error({
+                success: false,
+                error: "disconnect must be specified in the body"
+            });
+        }
+        const ret = await req.services.matchingService.disconnectRequest(req.user.id, disconnectFrom);
+        res.json(ret);
+    } catch (error) {
+        res.json(error);
+    }
+})
+
+
 module.exports = router;

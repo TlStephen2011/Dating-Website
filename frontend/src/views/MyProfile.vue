@@ -75,9 +75,9 @@
           </div>
         </v-col>
         <v-col :cols="12">
-          <div class="connections">
+          <div class="connections" v-if="connections.length > 0">
             <h2>My Connections</h2>
-            <v-text-field hide-details label="Search" append-icon="search" class="search-friend"></v-text-field>
+            <!-- <v-text-field hide-details label="Search" append-icon="search" class="search-friend"></v-text-field> -->
             <div class="user-connections">
               <User v-for="user in connections" :key="user.id" :user="user"></User>
             </div>
@@ -397,7 +397,7 @@ export default {
           this.user.id != u.id
       );
       // console.log(matchedUsers);
-      this.connections.push(matchedUsers);
+      if (matchedUsers) this.connections.push(matchedUsers);
     });
 
     if (this.user.dateOfBirth)

@@ -105,6 +105,23 @@ class MatchingService {
         })
     }
 
+    disconnectRequest(id, from) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const ret = await this.matchesRepository.removeConnection(id, from);
+                resolve({
+                    success: true,
+                    message: 'You match has been removed'
+                })
+            } catch (error) {
+                reject({
+                    success: false,
+                    error
+                });
+            }
+        })
+    }
+
 }
 
 module.exports = MatchingService;
