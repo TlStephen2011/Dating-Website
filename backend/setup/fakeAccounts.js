@@ -127,7 +127,7 @@ handleUser = async (user) => {
         await imagesRepository.save(insertedUser.id, 1, customProfileImageFileName);
 
     } catch (error) {
-        console.log('Error adding user', user, error);
+        // console.log('Error adding user', user, error);
     }
 }
 
