@@ -23,6 +23,10 @@
                 <v-icon>mdi-human-male-female</v-icon>
                 <p>{{ user.sexuality }}</p>
               </span>
+              <span class="profile-item">
+                <v-icon>mdi-star</v-icon>
+                <p>{{user.fameRating}}</p>
+              </span>
               <!-- <span class="profile-item">
                 <v-icon>mdi-map-marker</v-icon>
                 <p>Los Angeles, United States</p>

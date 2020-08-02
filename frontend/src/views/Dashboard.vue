@@ -1,6 +1,13 @@
 <template>
   <DashboardLayout @navLinkClicked="updateView">
     <v-container>
+      <h1>Recommendations</h1>
+      <div class="results-grid" v-if="recommendations.length > 0">
+        <User v-for="user in recommendations" :key="user.id" :user="user"></User>
+      </div>
+      <div v-else>
+        <h4 class="ml-5 mb-10">No recommendations available</h4>
+      </div>
       <h1>Dashboard</h1>
       <SearchFilterSort @filterBy="filterUsers" />
       <div v-if="filteredUsers.length != 0">
@@ -25,7 +32,7 @@
           :click-handler="updateUsers"
         ></paginate>
       </div>
-      <div v-else>
+      <div v-else class="mb-10">
         <h1>No users to display</h1>
       </div>
     </v-container>
@@ -160,22 +167,22 @@ export default {
       switch (locationVal) {
         case 0:
           this.filteredUsers = this.filteredUsers.filter(u => {
-            u.distance <= 1;
+            if (u.distance <= 1) return u;
           });
           break;
         case 1:
           this.filteredUsers = this.filteredUsers.filter(u => {
-            u.distance <= 10;
+            if (u.distance <= 10) return u;
           });
           break;
         case 2:
           this.filteredUsers = this.filteredUsers.filter(u => {
-            u.distance <= 100;
+            if (u.distance <= 100) return u;
           });
           break;
         case 3:
           this.filteredUsers = this.filteredUsers.filter(u => {
-            u.distance <= 500;
+            if (u.distance <= 500) return u;
           });
           break;
         default:
@@ -186,6 +193,77 @@ export default {
   computed: {
     numPages() {
       return Math.ceil(this.filteredUsers.length / 20);
+    },
+    recommendations() {
+      const user = this.$store.state.user;
+      const stateUsers = this.$store.state.users;
+      let temp = [];
+      if (!user.gender) {
+        return [];
+      }
+
+      switch (user.sexuality) {
+        case "bisexual":
+          temp = stateUsers.filter(u => {
+            if (u.sexuality === "bisexual") {
+              return u;
+            }
+
+            if (user.gender === "male") {
+              if (u.sexuality === "heterosexual" && u.gender === "female")
+                return u;
+              else if (u.sexuality === "homosexual" && u.gender === "male")
+                return u;
+            } else {
+              if (u.sexuality === "heterosexual" && u.gender === "male")
+                return u;
+              else if (u.sexuality === "homosexual" && u.gender === "female")
+                return u;
+            }
+          });
+          break;
+        case "heterosexual":
+          temp = stateUsers.filter(u => {
+            if (u.gender === "male" && u.sexuality !== "homosexual") {
+              if (user.gender === "female") {
+                return u;
+              }
+            } else if (u.gender === "female" && u.sexuality !== "homosexual") {
+              if (user.gender === "male") {
+                return u;
+              }
+            }
+          });
+          break;
+        case "homosexual":
+          temp = stateUsers.filter(u => {
+            if (
+              u.gender === "male" &&
+              (u.sexuality === "homosexual" || u.sexuality === "bisexual")
+            ) {
+              if (user.gender === "male") {
+                return u;
+              }
+            } else if (
+              u.gender === "female" &&
+              (u.sexuality === "homosexual" || u.sexuality === "bisexual")
+            ) {
+              if (user.gender === "female") {
+                return u;
+              }
+            }
+          });
+          break;
+        default:
+          break;
+      }
+
+      temp = temp.sort((a, b) => {
+        if (a.distance < b.distance) return -1;
+        else return 1;
+      });
+
+      return temp.slice(0, 5);
     }
   }
 };

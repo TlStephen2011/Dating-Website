@@ -58,8 +58,8 @@ axios.get('https://randomuser.me/api/?results=1000&nat=us')
 getSouthAfricanLocation = () => {
     const coordinates = [];
 
-    const latitude = Math.random() * 10 - 30;
-    const longitude = 35 - Math.random() * 8;
+    const latitude = -1 * (Math.random() * 10 - 30);
+    const longitude = -1 * (35 - Math.random() * 8);
 
     coordinates.push(latitude, longitude);
     return coordinates;
